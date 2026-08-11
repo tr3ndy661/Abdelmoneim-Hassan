@@ -110,6 +110,35 @@
 }
 
 /* ============================================================
+ * Box Button (Plus Icon)
+ * ============================================================ */
+.product-grid__box-btn {
+  position: absolute;
+  top: 18px;
+  right: 52px;
+  width: 16px;
+  height: 16px;
+  background-color: #f8f8f8e6;
+  border-radius: 7.86px;
+  box-shadow: 0px 3px 4px #00000033;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.2s ease;
+}
+
+.product-grid__box-btn:hover {
+  transform: scale(1.1);
+}
+
+.product-grid__box-btn svg {
+  width: 8px;
+  height: 8px;
+}
+
+/* ============================================================
  * Hotspot "+" Button
  * ============================================================
  * Positioned absolutely within the image wrapper. Each block's
