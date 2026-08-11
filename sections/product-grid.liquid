@@ -80,25 +80,40 @@
   <div class="product-grid">
     {%- for block in section.blocks -%}
       {%- assign product = block.settings.product -%}
-      {%- assign asset_image_name = '' -%}
-      {%- if forloop.index == 1 -%}{%- assign asset_image_name = 'image 830(1).png' -%}{%- endif -%}
-      {%- if forloop.index == 2 -%}{%- assign asset_image_name = 'image 831.png' -%}{%- endif -%}
-      {%- if forloop.index == 3 -%}{%- assign asset_image_name = 'image 832.png' -%}{%- endif -%}
-      {%- if forloop.index == 4 -%}{%- assign asset_image_name = 'image 833.png' -%}{%- endif -%}
-      {%- if forloop.index == 5 -%}{%- assign asset_image_name = 'image 834.png' -%}{%- endif -%}
-      {%- if forloop.index == 6 -%}{%- assign asset_image_name = 'image 835.png' -%}{%- endif -%}
+      {%- assign custom_image = block.settings.custom_image -%}
 
       <div
-        class="product-grid__item {% if product == blank %}product-grid__item--empty{% endif %}"
+        class="product-grid__item {% if product == blank and custom_image == blank %}product-grid__item--empty{% endif %}"
         {{ block.shopify_attributes }}
         data-block-id="{{ block.id }}"
       >
         <div class="product-grid__image-wrapper">
-          {%- if asset_image_name contains '.png' -%}
+          {%- if custom_image != blank -%}
             <img
-              src="{{ asset_image_name | asset_url }}"
-              alt="{{ product.title | escape }}"
+              src="{{ custom_image | image_url: width: 866 }}"
+              srcset="
+                {{ custom_image | image_url: width: 433 }} 433w,
+                {{ custom_image | image_url: width: 866 }} 866w
+              "
+              sizes="(max-width: 768px) 45vw, 433px"
+              alt="{{ custom_image.alt | default: product.title | escape }}"
               class="product-grid__image"
+              width="433"
+              height="444"
+              loading="lazy"
+            >
+          {%- elsif product.featured_image != blank -%}
+            <img
+              src="{{ product.featured_image | image_url: width: 866 }}"
+              srcset="
+                {{ product.featured_image | image_url: width: 433 }} 433w,
+                {{ product.featured_image | image_url: width: 866 }} 866w
+              "
+              sizes="(max-width: 768px) 45vw, 433px"
+              alt="{{ product.featured_image.alt | default: product.title | escape }}"
+              class="product-grid__image"
+              width="433"
+              height="444"
               loading="lazy"
             >
           {%- else -%}
@@ -197,6 +212,12 @@
       "type": "product_block",
       "name": "Product",
       "settings": [
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom Image",
+          "info": "Overrides the product's default featured image."
+        },
         {
           "type": "product",
           "id": "product",
