@@ -18,17 +18,6 @@
     render 'slideshow-styles'
   endif
 
-  if section.settings.enable_transparent_header_home and template.name == 'index'
-    assign transparent = 'always'
-    assign transparent_text_color_setting = section.settings.text_color_transparent_home
-  elsif section.settings.enable_transparent_header_product and template.name == 'product'
-    assign transparent = 'always'
-    assign transparent_text_color_setting = section.settings.text_color_transparent_product
-  elsif section.settings.enable_transparent_header_collection and template.name == 'collection'
-    assign transparent = 'always'
-    assign transparent_text_color_setting = section.settings.text_color_transparent_collection
-  endif
-
   if section.settings.enable_sticky_header == 'always'
     assign sticky = 'always'
   elsif section.settings.enable_sticky_header == 'scroll-up'
@@ -1693,26 +1682,6 @@
       "visible_if": "{{ section.settings.bubble_style == 'custom' }}"
     },
 
-    {
-      "type": "checkbox",
-      "id": "enable_transparent_header_home",
-      "label": "t:settings.transparent_background",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "home_inverse_logo",
-      "label": "t:settings.inverse_logo",
-      "default": false,
-      "visible_if": "{{ section.settings.enable_transparent_header_home }}"
-    },
-    {
-      "type": "color",
-      "id": "text_color_transparent_home",
-      "label": "t:settings.text_color_transparent",
-      "placeholder": "t:settings.default",
-      "visible_if": "{{ section.settings.enable_transparent_header_home }}"
-    },
     {
       "type": "header",
       "content": "t:content.product_page"
