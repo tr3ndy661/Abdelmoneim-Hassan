@@ -204,6 +204,13 @@
 .product-grid__backdrop {
   display: none;
 }
+.product-grid__backdrop--visible {
+  display: block;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
 
 /* ============================================================
  * Product Popup / Popover Card
@@ -216,12 +223,12 @@
  * ============================================================ */
 .product-grid__popup {
   display: none;
-  position: absolute;
-  z-index: 10;
+  position: fixed;
+  z-index: 100;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 280px;
+  width: 311px;
 }
 
 .product-grid__popup[aria-hidden="false"] {
@@ -243,9 +250,9 @@
 
 .product-grid__popup-inner {
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  padding: 20px;
+  border-radius: 0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.20);
+  padding: 36px 20px 20px 20px;
   position: relative;
   font-family: 'Jost', sans-serif;
 }
@@ -253,65 +260,71 @@
 /* ---- Popup Close Button ---- */
 .product-grid__popup-close {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 28px;
-  height: 28px;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 18px;
-  color: #666;
+  font-size: 24px;
+  color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: color 0.2s ease;
   padding: 0;
   line-height: 1;
   font-family: 'Jost', sans-serif;
 }
 
 .product-grid__popup-close:hover {
-  background-color: #f0f0f0;
-  color: #000;
+  color: #666;
 }
 
 /* ============================================================
  * Popup Content Typography
  * ============================================================ */
+.product-grid__popup-header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.product-grid__popup-image {
+  width: 120px;
+  height: 140px;
+  object-fit: cover;
+}
+
+.product-grid__popup-info {
+  flex: 1;
+}
+
 .product-grid__popup-title {
   font-family: 'Jost', sans-serif;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 300;
   color: #000;
-  margin: 0 0 6px;
-  padding-right: 30px;
-  /* Avoid overlapping close button */
-  line-height: 1.3;
+  margin: 13px 0 10px;
+  line-height: 1.2;
 }
 
 .product-grid__popup-price {
-  font-family: 'Jost', sans-serif;
-  font-size: 15px;
+  font-family: 'Lustria', serif;
+  font-size: 16px;
   font-weight: 400;
-  color: #333;
+  color: #000;
   margin: 0 0 10px;
 }
 
-/* Truncate long product descriptions so the popup stays compact */
 .product-grid__popup-description {
   font-family: 'Jost', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: #666;
-  line-height: 1.5;
-  margin: 0 0 14px;
-  max-height: 60px;
-  overflow: hidden;
-  /* Fade-out mask at the bottom of truncated text */
-  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  font-size: 12px;
+  font-weight: 300;
+  color: #000;
+  line-height: 1.2;
+  margin: 0;
 }
 
 /* Strip default margin from description HTML paragraphs */
@@ -321,49 +334,42 @@
 
 /* ============================================================
  * Variant Option Selectors
- * ============================================================
- * Custom styled <select> dropdowns for Size and Color options.
- * Uses a custom chevron SVG to replace the native dropdown arrow.
  * ============================================================ */
 .product-grid__option-group {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .product-grid__option-group label {
   display: block;
   font-family: 'Jost', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   color: #333;
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin-bottom: 6px;
 }
 
 .product-grid__option-select {
   width: 100%;
-  padding: 8px 32px 8px 10px;
+  height: 40.44px;
+  padding: 0 13px;
   font-family: 'Jost', sans-serif;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  font-size: 16px;
+  border: 0.5px solid black;
+  border-radius: 0;
   background-color: #fff;
   color: #000;
   cursor: pointer;
-  /* Remove native appearance for a custom look */
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  /* Custom chevron icon via inline SVG data URI */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23333' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='black' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center;
+  background-position: right 13px center;
   box-sizing: border-box;
 }
 
 .product-grid__option-select:focus {
   outline: none;
-  border-color: #000;
 }
 
 /* ============================================================
@@ -371,20 +377,22 @@
  * ============================================================ */
 .product-grid__add-to-cart {
   width: 100%;
-  padding: 10px;
+  height: 45px;
   font-family: 'Jost', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   background-color: #000;
   color: #fff;
   border: none;
   border-radius: 0;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-top: 4px;
+  margin-top: 20px;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-grid__add-to-cart:hover {
@@ -449,28 +457,16 @@
     font-size: 16px;
   }
 
-  /* Fullscreen backdrop behind popup on mobile */
-  .product-grid__backdrop--visible {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 99;
-  }
+  /* Fullscreen backdrop behind popup on mobile (now globally managed, but kept here if it was duplicated) */
+  /* Handled globally now */
 
   /* Fixed viewport-centered popup on mobile */
   .product-grid__popup {
-    position: fixed;
-    z-index: 100;
-    width: calc(100vw - 48px);
-    max-width: 320px;
-    top: 50%;
-    left: 50%;
+    width: 311px;
   }
 
   .product-grid__popup-inner {
-    padding: 18px;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
   }
 }

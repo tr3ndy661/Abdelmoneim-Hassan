@@ -77,6 +77,7 @@
 
       var gridItem = popup.closest('.product-grid__item');
       var hotspot = gridItem ? gridItem.querySelector('.product-grid__hotspot') : null;
+      var boxBtn = gridItem ? gridItem.querySelector('.product-grid__box-btn') : null;
       var isCurrentlyOpen = popup.getAttribute('aria-hidden') === 'false';
 
       /* Close all first (enforces single-popup-at-a-time rule) */
@@ -357,10 +358,6 @@
         e.stopPropagation(); /* Prevent document click handler from closing */
         var gridItem = btn.closest('.product-grid__item');
         var blockId = gridItem ? gridItem.dataset.blockId : null;
-        if (blockId) togglePopup(blockId);
-      });
-    });
-
     /* ---- Popup close button ---- */
     section.querySelectorAll('.product-grid__popup-close').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
@@ -369,20 +366,39 @@
       });
     });
 
-    /* ---- Backdrop click (mobile) → close popup ---- */
+    section.querySelectorAll('.product-grid__item').forEach(function (item) {
+      var blockId = item.getAttribute('data-block-id');
+      var hotspotBtn = item.querySelector('.product-grid__hotspot');
+      var boxBtn = item.querySelector('.product-grid__box-btn');
+
+      if (hotspotBtn) {
+        hotspotBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          togglePopup(blockId);
+        });
+      }
+
+      if (boxBtn) {
+        boxBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          togglePopup(blockId);
+        });
+      }
+    }); /* ---- Backdrop click (mobile) → close popup ---- */
     if (backdrop) {
       backdrop.addEventListener('click', function () {
         closeAllPopups();
       });
     }
 
-    /* ---- Click outside any popup → close all ---- */
+    /* ---- Click outside → close all popups ---- */
     document.addEventListener('click', function (e) {
       if (
         e.target.closest('.product-grid__popup') ||
-        e.target.closest('.product-grid__hotspot')
+        e.target.closest('.product-grid__hotspot') ||
+        e.target.closest('.product-grid__box-btn')
       ) {
-        return; /* Click was inside popup or on hotspot — ignore */
+        return; /* Click was inside popup or on buttons — ignore */
       }
       closeAllPopups();
     });

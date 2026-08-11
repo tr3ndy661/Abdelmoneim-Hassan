@@ -159,10 +159,17 @@
                 &times;
               </button>
 
-              <h3 class="product-grid__popup-title">{{ product.title }}</h3>
-              <p class="product-grid__popup-price">{{ product.price | money }}</p>
-              <div class="product-grid__popup-description">
-                {{ product.description }}
+              <div class="product-grid__popup-header">
+                {%- if product.featured_image != blank -%}
+                  <img src="{{ product.featured_image | image_url: width: 240 }}" class="product-grid__popup-image" alt="">
+                {%- endif -%}
+                <div class="product-grid__popup-info">
+                  <h3 class="product-grid__popup-title">{{ product.title }}</h3>
+                  <p class="product-grid__popup-price">{{ product.price | money }}</p>
+                  <div class="product-grid__popup-description">
+                    {{ product.description | strip_html | truncatewords: 20 }}
+                  </div>
+                </div>
               </div>
 
               <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
