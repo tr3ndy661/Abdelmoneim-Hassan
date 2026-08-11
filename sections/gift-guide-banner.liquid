@@ -298,21 +298,12 @@
 
   .gift-banner__top-btn-label {
     position: relative;
-    transition: transform 300ms ease-out;
   }
 
   .gift-banner__top-btn-icon {
     display: inline-flex;
     align-items: center;
-    transition: transform 300ms ease-out;
-  }
-
-  .gift-banner__top-btn:hover .gift-banner__top-btn-icon {
-    transform: translateX(4px);
-  }
-
-  .gift-banner__top-btn:hover .gift-banner__top-btn-label {
-    transform: translateX(-4px);
+    z-index: 1;
   }
 
   /* ============================================================
@@ -393,7 +384,7 @@
     transition: color 400ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 400ms ease-out;
   }
 
-  /* Button label — shifts left on hover */
+  /* Button label */
   .gift-banner__btn-label {
     position: relative;
     z-index: 1;
@@ -401,24 +392,13 @@
     align-items: center;
     text-align: center;
     white-space: nowrap;
-    transition: transform 300ms ease-out;
   }
 
   /* Arrow icon */
   .gift-banner__btn-icon {
     display: inline-flex;
     align-items: center;
-    transition: transform 300ms ease-out;
     z-index: 1;
-  }
-
-  /* Hover animation — Smart Animate 300ms ease-out */
-  .gift-banner__btn:hover .gift-banner__btn-icon {
-    transform: translateX(4px);
-  }
-
-  .gift-banner__btn:hover .gift-banner__btn-label {
-    transform: translateX(-4px);
   }
 
   /* ---- Black CTA ("SHOP NOW") ----
@@ -608,11 +588,13 @@
     .gift-banner__illus--bottom {
       position: relative;
       top: auto;
-      left: auto;
-      width: 100%;
-      height: 360px; /* fixed height to allow cropping */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 686px;
+      max-width: none;
+      height: 264px;
       object-fit: cover;
-      object-position: center; /* centers the camera lens */
+      object-position: center;
       order: 5;
       margin-top: 24px;
       margin-bottom: 0;
