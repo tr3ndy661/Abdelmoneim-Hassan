@@ -1,89 +1,80 @@
 {% comment %}
   Gift Guide Banner Section
   =========================
-  Built from scratch — no Dawn components/snippets used, per test requirements.
+  Built entirely from scratch — no Dawn components/snippets.
 
-  Layout (matches Figma spec):
-    - Full-width background: white with line-art illustration images
-    - Top utility bar: logo (left) + subtext (center) + yellow CTA (right)
-    - Main hero content: heading + description + black CTA (left-aligned)
-    - Bottom scrolling ticker bar
+  Layout (from Figma CSS export):
+    Section:  1440 × 878px (64px top bar + 780px content area + 34px ticker)
+    Top bar:  TISSO VISON (left) | subtext (center) | yellow CTA (right)
+    Content:  Two illustration images tiled asymmetrically:
+              - Frame.png:    1440×390, top-left (full width, top half)
+              - Frame(1).png: 890×402, at left:550 top:378 (bottom-RIGHT only)
+              This leaves the bottom-left quadrant as clean white space
+              for the heading, description, and black CTA button.
+    Ticker:   Black bar at the absolute bottom, scrolling text.
 
-  Background images (gift-guide-bg-top.png / gift-guide-bg-bottom.png) are
-  hardcoded as static assets because they are decorative illustrations that
-  are part of the page design, not merchant-editable content. The merchant
-  CAN still override them via the optional image picker in the customizer.
-
-  Dimensions from Figma:
-    Banner:  1440 × 878px
-    Heading: Jost 500, 70px, #000, line-height 100%
-    Subtext: Jost 400, 20px, #000, line-height 140%
-    Yellow button: 207 × 44px, #FFF544
-    Black button:  220 × 50px, #000, at left:67 top:743
+  All positions use the Figma export values with a +64px vertical offset
+  to account for the top bar area (confirmed by button position: 679+64=743).
 {% endcomment %}
 
 <section class="gift-banner" style="background-color: {{ section.settings.background_color }};">
-  {%- comment -%}
-    Background illustration — two image halves that tile vertically
-    to cover the full 878px banner height. If the merchant uploads
-    a custom background via the customizer, it takes priority.
+
+  {%- comment -%} ---- Background Illustrations ----
+    Two images compose the background. They are NOT full-bleed —
+    Frame(1).png is offset right (left:550px) to deliberately leave
+    the bottom-left clear for the text content overlay.
   {%- endcomment -%}
   {% if section.settings.background_image %}
-    <div class="gift-banner__bg">
-      {{ section.settings.background_image | image_url: width: 1440 | image_tag:
-        loading: 'eager',
-        alt: section.settings.heading,
-        class: 'gift-banner__bg-img'
-      }}
-    </div>
+    {%- comment -%} Custom image override from customizer {%- endcomment -%}
+    <img
+      src="{{ section.settings.background_image | image_url: width: 1440 }}"
+      alt="{{ section.settings.heading | escape }}"
+      class="gift-banner__illus gift-banner__illus--custom"
+      loading="eager"
+    >
   {% else %}
-    <div class="gift-banner__bg gift-banner__bg--illustrations">
-      <img
-        src="{{ 'gift-guide-bg-top.png' | asset_url }}"
-        alt=""
-        class="gift-banner__bg-tile gift-banner__bg-tile--top"
-        loading="eager"
-        aria-hidden="true"
-      >
-      <img
-        src="{{ 'gift-guide-bg-bottom.png' | asset_url }}"
-        alt=""
-        class="gift-banner__bg-tile gift-banner__bg-tile--bottom"
-        loading="eager"
-        aria-hidden="true"
-      >
-    </div>
+    <img
+      src="{{ 'gift-guide-bg-top.png' | asset_url }}"
+      alt=""
+      aria-hidden="true"
+      class="gift-banner__illus gift-banner__illus--top"
+      loading="eager"
+    >
+    <img
+      src="{{ 'gift-guide-bg-bottom.png' | asset_url }}"
+      alt=""
+      aria-hidden="true"
+      class="gift-banner__illus gift-banner__illus--bottom"
+      loading="eager"
+    >
   {% endif %}
 
-  {%- comment -%} ---- Top utility bar ---- {%- endcomment -%}
+  {%- comment -%} ---- Top Utility Bar ---- {%- endcomment -%}
   <div class="gift-banner__top">
     <p class="gift-banner__logo">{{ section.settings.logo_text }}</p>
     <p class="gift-banner__top-subtext">{{ section.settings.top_subtext }}</p>
-
     <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--yellow">
-      <span class="gift-banner__btn-accent" aria-hidden="true"></span>
       <span class="gift-banner__btn-label">{{ section.settings.top_button_text }}</span>
       <span class="gift-banner__btn-dash" aria-hidden="true"></span>
     </a>
   </div>
 
-  {%- comment -%} ---- Main hero content ---- {%- endcomment -%}
-  <div class="gift-banner__content">
-    <h1 class="gift-banner__heading">{{ section.settings.heading }}</h1>
-    <div class="gift-banner__description">{{ section.settings.description }}</div>
+  {%- comment -%} ---- Heading ---- {%- endcomment -%}
+  <h1 class="gift-banner__heading">{{ section.settings.heading }}</h1>
 
-    <a href="{{ section.settings.cta_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--black">
-      <span class="gift-banner__btn-accent" aria-hidden="true"></span>
-      <span class="gift-banner__btn-label">{{ section.settings.cta_text }}</span>
-      <span class="gift-banner__btn-dash" aria-hidden="true"></span>
-    </a>
-  </div>
+  {%- comment -%} ---- Description ---- {%- endcomment -%}
+  <div class="gift-banner__description">{{ section.settings.description }}</div>
 
-  {%- comment -%} ---- Bottom scrolling ticker ---- {%- endcomment -%}
+  {%- comment -%} ---- Black CTA Button ---- {%- endcomment -%}
+  <a href="{{ section.settings.cta_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--black">
+    <span class="gift-banner__btn-label">{{ section.settings.cta_text }}</span>
+    <span class="gift-banner__btn-dash" aria-hidden="true"></span>
+  </a>
+
+  {%- comment -%} ---- Bottom Scrolling Ticker ---- {%- endcomment -%}
   {% if section.settings.ticker_text != blank %}
     <div class="gift-banner__ticker" aria-hidden="true">
       <div class="gift-banner__ticker-track">
-        {% comment %} Duplicated 6× for seamless infinite scroll loop {% endcomment %}
         {% for i in (1..6) %}
           <span class="gift-banner__ticker-item">{{ section.settings.ticker_text }}</span>
         {% endfor %}
@@ -94,15 +85,17 @@
 
 <style>
   /* ============================================================
-   * Gift Guide Banner — Styles
+   * Gift Guide Banner — Layout & Styles
    * ============================================================
-   * All dimensions match the Figma spec provided by the client.
-   * Font: Jost (loaded via Google Fonts in the asset CSS).
+   * All pixel values come directly from the Figma CSS export.
+   * The 64px offset (for text positions) accounts for the top
+   * utility bar height: .box position + 64 = section position.
+   *
+   * Coordinate reference: section top-left corner = (0, 0).
    * ============================================================ */
 
   @import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap');
 
-  /* ---- Section Container ---- */
   .gift-banner {
     position: relative;
     width: 100%;
@@ -111,69 +104,79 @@
     margin: 0 auto;
     overflow: hidden;
     font-family: 'Jost', sans-serif;
-    background-color: #fff;
+    background-color: #ffffff;
   }
 
-  /* ---- Background ---- */
-  /* Single custom image (merchant-uploaded via customizer) */
-  .gift-banner__bg {
+  /* ============================================================
+   * Background Illustrations
+   * ============================================================
+   * Two images compose the decorative background:
+   *
+   * Frame.png (top): Covers full width at the top of the section.
+   *   Figma: .frame { top:0, left:0, w:1440, h:390 }
+   *   Section: top:64 (below top bar)
+   *
+   * Frame(1).png (bottom-right): Intentionally NOT full-width.
+   *   Figma: .img { top:378, left:550, w:890, h:402 }
+   *   Section: top:442 (64+378), left:550
+   *   This asymmetric placement leaves the bottom-left quadrant
+   *   as clean white space for the text/CTA overlay.
+   * ============================================================ */
+  .gift-banner__illus {
     position: absolute;
-    inset: 0;
     z-index: 0;
+    display: block;
   }
 
-  .gift-banner__bg-img {
+  .gift-banner__illus--custom {
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
   }
 
-  /* Default illustration background — two tiled halves.
-     Top image sits in the upper portion, bottom image below.
-     Together they fill the 878px banner seamlessly. */
-  .gift-banner__bg--illustrations {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
-
-  .gift-banner__bg-tile {
-    width: 100%;
-    display: block;
+  /* Top illustration — full width, top portion */
+  .gift-banner__illus--top {
+    top: 64px;
+    left: 0;
+    width: 1440px;
+    height: 390px;
     object-fit: cover;
   }
 
-  /* Top tile: takes up roughly the upper 50% of the banner */
-  .gift-banner__bg-tile--top {
-    height: 50%;
-    object-position: center top;
-  }
-
-  /* Bottom tile: fills the remaining lower portion */
-  .gift-banner__bg-tile--bottom {
-    height: 50%;
-    object-position: center top;
+  /* Bottom illustration — right-aligned, leaves left side clear for text */
+  .gift-banner__illus--bottom {
+    top: 442px;      /* 64 + 378 from Figma */
+    left: 550px;
+    width: 890px;
+    height: 402px;
+    object-fit: cover;
   }
 
   /* ============================================================
    * Top Utility Bar
    * ============================================================
-   * Figma: flex row, items spaced between, padding 24px 67px.
-   * Logo left, subtext centered, yellow CTA right.
+   * Flex row: logo (left) | subtext (center) | yellow CTA (right)
+   * Sits in the top 64px of the section, above the illustrations.
    * ============================================================ */
   .gift-banner__top {
-    position: relative;
-    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 24px 67px 0;
+    padding: 0 67px;
+    height: 64px;
+    box-sizing: border-box;
   }
 
   .gift-banner__logo {
+    font-family: 'Jost', sans-serif;
     font-weight: 500;
     font-size: 20px;
     letter-spacing: 0.05em;
@@ -184,6 +187,7 @@
   }
 
   .gift-banner__top-subtext {
+    font-family: 'Jost', sans-serif;
     font-weight: 400;
     font-size: 16px;
     line-height: 140%;
@@ -194,16 +198,62 @@
   }
 
   /* ============================================================
-   * Buttons — Shared Base
+   * Heading — "The Gift Guide"
    * ============================================================
-   * Both buttons share the same Figma structure:
-   *   1. Left accent line (Rectangle 26036 — thin vertical border)
-   *   2. Centered uppercase text label
-   *   3. Right-side horizontal dash (Line 15 — minimal arrow indicator)
-   *
-   * Hover animation (Smart Animate 300ms ease-out):
-   *   - Dash slides right
-   *   - Label shifts left
+   * Figma: .text-wrapper
+   *   top: 54.49% of 780 = 425px → section: 489px (425+64)
+   *   left: 4.64% of 1440 = 67px
+   *   font: Jost Medium 70px, line-height: 70px, color: #000
+   * ============================================================ */
+  .gift-banner__heading {
+    position: absolute;
+    top: 489px;
+    left: 67px;
+    z-index: 2;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    font-size: 70px;
+    line-height: 70px;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* ============================================================
+   * Description
+   * ============================================================
+   * Figma: .p
+   *   top: 545px → section: 609px (545+64)
+   *   left: calc(50% - 655px) ≈ 65px in 1440px → using 67px for alignment
+   *   width: 483px, font: Jost Regular 20px, line-height: 28px
+   * ============================================================ */
+  .gift-banner__description {
+    position: absolute;
+    top: 609px;
+    left: 67px;
+    z-index: 2;
+    width: 483px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0;
+  }
+
+  .gift-banner__description p {
+    margin: 0;
+  }
+
+  /* ============================================================
+   * Buttons — Shared Structure
+   * ============================================================
+   * Both buttons use the same Figma structure:
+   *   - Centered uppercase label
+   *   - Right-side horizontal dash (Line 15 from Figma)
+   * Hover: dash slides right, label shifts left (300ms ease-out)
    * ============================================================ */
   .gift-banner__btn {
     display: inline-flex;
@@ -214,7 +264,7 @@
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
-    line-height: 20px;
+    line-height: 20.5px;
     text-transform: uppercase;
     border-radius: 0;
     position: relative;
@@ -222,31 +272,20 @@
     box-sizing: border-box;
   }
 
-  /* Left accent line (Rectangle 26036)
-     Figma: 0.48% wide ≈ 1px thin vertical accent. */
-  .gift-banner__btn-accent {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: currentColor;
-    opacity: 0.3;
-  }
-
-  /* Button label — centered text that shifts left on hover */
+  /* Button label — shifts left on hover */
   .gift-banner__btn-label {
     position: relative;
     z-index: 1;
     display: flex;
     align-items: center;
     text-align: center;
+    white-space: nowrap;
     transition: transform 300ms ease-out;
   }
 
-  /* Right-side horizontal dash (Line 15)
-     Figma: left:77.78%, right:10.63%, vertically centered.
-     Acts as a minimal arrow indicator → slides right on hover. */
+  /* Horizontal dash line (Figma: Line 15)
+     Positioned at ~78% from left, vertically centered.
+     Acts as a minimal arrow indicator. */
   .gift-banner__btn-dash {
     position: absolute;
     left: 77.78%;
@@ -258,7 +297,7 @@
     transition: transform 300ms ease-out;
   }
 
-  /* Hover — mirrors Figma Smart Animate 300ms ease-out */
+  /* Hover animation — Smart Animate 300ms ease-out */
   .gift-banner__btn:hover .gift-banner__btn-dash {
     transform: translateY(-50%) translateX(4px);
   }
@@ -267,66 +306,37 @@
     transform: translateX(-4px);
   }
 
-  /* ---- Yellow Button (top bar — "CHOOSE GIFT") ---- */
+  /* ---- Yellow CTA (top bar — "CHOOSE GIFT") ----
+     Figma: 207×44px, bg: #FFF544, text: #000 */
   .gift-banner__btn--yellow {
     width: 207px;
     height: 44px;
     background-color: #FFF544;
     color: #000;
     font-size: 15px;
+    flex-shrink: 0;
   }
 
-  /* ---- Black Button ("SHOP NOW") ----
-     Figma: 220×50px, positioned absolutely at left:67, top:743. */
+  /* ---- Black CTA ("SHOP NOW") ----
+     Figma: .component { top:679, left:67, w:220, h:50 }
+     Section: top: 743px (679+64) */
   .gift-banner__btn--black {
     position: absolute;
     top: 743px;
     left: 67px;
     width: 220px;
     height: 50px;
-    background-color: #000;
-    color: #fff;
+    background-color: #000000;
+    color: #ffffff;
     font-size: 16px;
     z-index: 2;
   }
 
   /* ============================================================
-   * Main Hero Content
-   * ============================================================
-   * Figma: left-aligned text block over the illustrations.
-   * Heading: Jost 500 / 70px / #000 / line-height 100%
-   * Description: Jost 400 / 20px / #000 / line-height 140%
-   * ============================================================ */
-  .gift-banner__content {
-    position: relative;
-    z-index: 2;
-    padding: 100px 67px 0;
-    max-width: 640px;
-  }
-
-  .gift-banner__heading {
-    font-family: 'Jost', sans-serif;
-    font-weight: 500;
-    font-size: 70px;
-    line-height: 100%;
-    color: #000;
-    margin: 0 0 24px;
-  }
-
-  .gift-banner__description {
-    font-family: 'Jost', sans-serif;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 140%;
-    color: #000;
-    margin: 0 0 40px;
-  }
-
-  /* ============================================================
    * Bottom Ticker
    * ============================================================
-   * Black bar at the absolute bottom. Text scrolls infinitely
-   * left via CSS animation (duplicated 6× for seamless loop).
+   * Black bar at the absolute bottom of the section.
+   * Text scrolls left infinitely via CSS animation.
    * ============================================================ */
   .gift-banner__ticker {
     position: absolute;
@@ -335,8 +345,8 @@
     width: 100%;
     background-color: #000;
     overflow: hidden;
-    z-index: 2;
-    padding: 12px 0;
+    z-index: 3;
+    padding: 10px 0;
   }
 
   .gift-banner__ticker-track {
@@ -347,6 +357,7 @@
 
   .gift-banner__ticker-item {
     color: #fff;
+    font-family: 'Jost', sans-serif;
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.05em;
@@ -369,52 +380,76 @@
 
   /* ============================================================
    * Mobile Responsive (≤749px)
+   * ============================================================
+   * Collapses to a single-column flow layout.
+   * Absolute positioning switches to relative/static for natural
+   * stacking. Images scale down proportionally.
    * ============================================================ */
   @media screen and (max-width: 749px) {
     .gift-banner {
       height: auto;
       min-height: 100vh;
+      padding-bottom: 40px; /* Space for ticker */
     }
 
-    .gift-banner__bg--illustrations {
-      /* On mobile, let illustrations fill and overflow naturally */
-      min-height: 100%;
-    }
-
-    .gift-banner__bg-tile--top,
-    .gift-banner__bg-tile--bottom {
+    /* Stack illustrations vertically, scale to fit */
+    .gift-banner__illus--top {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 100%;
       height: auto;
-      min-height: 300px;
     }
 
+    .gift-banner__illus--bottom {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Top bar: stack vertically */
     .gift-banner__top {
+      position: relative;
+      height: auto;
       flex-direction: column;
       align-items: flex-start;
       gap: 12px;
-      padding: 16px 24px 0;
+      padding: 16px 24px;
     }
 
     .gift-banner__top-subtext {
       text-align: left;
     }
 
-    .gift-banner__content {
-      padding: 40px 24px 140px;
-      max-width: 100%;
-    }
-
+    /* Text content: switch to static flow */
     .gift-banner__heading {
+      position: relative;
+      top: auto;
+      left: auto;
+      padding: 24px 24px 0;
       font-size: 36px;
+      line-height: 36px;
+      white-space: normal;
     }
 
     .gift-banner__description {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: auto;
+      padding: 16px 24px 0;
       font-size: 16px;
+      line-height: 24px;
     }
 
     .gift-banner__btn--black {
-      position: static;
-      width: 100%;
-      margin-top: 24px;
+      position: relative;
+      top: auto;
+      left: auto;
+      width: calc(100% - 48px);
+      margin: 24px 24px 0;
     }
 
     .gift-banner__btn--yellow {
@@ -437,7 +472,7 @@
       "type": "image_picker",
       "id": "background_image",
       "label": "Custom background image",
-      "info": "Optional — overrides the default line-art illustrations. Use 1440×878px for best results."
+      "info": "Optional — overrides the default line-art illustrations. Use 1440×878px."
     },
     {
       "type": "color",
