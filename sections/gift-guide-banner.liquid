@@ -24,7 +24,7 @@
     Frame(1).png is offset right (left:550px) to deliberately leave
     the bottom-left clear for the text content overlay.
   {%- endcomment -%}
-  {% if section.settings.background_image %}
+  {% if section.settings.background_image != blank %}
     {%- comment -%} Custom image override from customizer {%- endcomment -%}
     <img
       src="{{ section.settings.background_image | image_url: width: 1440 }}"
@@ -586,11 +586,13 @@
     }
 
     .gift-banner__illus--bottom {
+      display: block;
       position: relative;
       top: auto;
-      left: auto;
-      transform: none;
-      width: 100%;
+      left: 50%;
+      transform: translateX(-85%);
+      width: 550px;
+      max-width: none;
       height: auto;
       order: 5;
       margin-top: 24px;
