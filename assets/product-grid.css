@@ -204,6 +204,7 @@
 .product-grid__backdrop {
   display: none;
 }
+
 .product-grid__backdrop--visible {
   display: block;
   position: fixed;
@@ -366,11 +367,6 @@
   font-size: 18px;
   color: #000;
   cursor: pointer;
-  transition: font-weight 0.2s ease;
-}
-
-.product-grid__color-box.is-selected {
-  font-weight: 600;
 }
 
 .product-grid__color-box:first-child {
