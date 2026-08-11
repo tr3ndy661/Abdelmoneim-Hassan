@@ -53,9 +53,13 @@
   <div class="gift-banner__top">
     <p class="gift-banner__logo">{{ section.settings.logo_text }}</p>
     <p class="gift-banner__top-subtext">{{ section.settings.top_subtext }}</p>
-    <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--yellow">
-      <span class="gift-banner__btn-label">{{ section.settings.top_button_text }}</span>
-      <span class="gift-banner__btn-dash" aria-hidden="true"></span>
+    <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn">
+      <span class="gift-banner__top-btn-label">{{ section.settings.top_button_text }}</span>
+      <span class="gift-banner__top-btn-icon" aria-hidden="true">
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 1L19 6M19 6L14 11M19 6H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
     </a>
   </div>
 
@@ -155,10 +159,24 @@
   }
 
   /* ============================================================
+   * Global Overrides for this Page
+   * ============================================================
+   * Hide the default theme header and footer since this landing
+   * page is meant to be standalone with just the banner + grid.
+   * ============================================================ */
+  #shopify-section-header,
+  #shopify-section-footer,
+  #shopify-section-announcement-bar,
+  .header-wrapper,
+  .footer-wrapper {
+    display: none !important;
+  }
+
+  /* ============================================================
    * Top Utility Bar
    * ============================================================
-   * Flex row: logo (left) | subtext (center) | yellow CTA (right)
-   * Sits in the top 64px of the section, above the illustrations.
+   * Grid layout ensures the subtext is perfectly centered
+   * regardless of the logo/button widths.
    * ============================================================ */
   .gift-banner__top {
     position: absolute;
@@ -166,20 +184,20 @@
     left: 0;
     right: 0;
     z-index: 3;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
     padding: 0 67px;
     height: 64px;
     box-sizing: border-box;
   }
 
   .gift-banner__logo {
+    justify-self: start;
     font-family: 'Jost', sans-serif;
     font-weight: 500;
     font-size: 20px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #000;
     margin: 0;
@@ -187,14 +205,53 @@
   }
 
   .gift-banner__top-subtext {
+    justify-self: center;
     font-family: 'Jost', sans-serif;
     font-weight: 400;
     font-size: 16px;
     line-height: 140%;
     color: #000;
     margin: 0;
-    flex: 1;
     text-align: center;
+  }
+
+  /* ---- Yellow CTA (top bar — "CHOOSE GIFT") ---- */
+  .gift-banner__top-btn {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 207px;
+    height: 44px;
+    background-color: #FFF544;
+    color: #000;
+    text-decoration: none;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gift-banner__top-btn-label {
+    position: relative;
+    transition: transform 300ms ease-out;
+  }
+
+  .gift-banner__top-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 300ms ease-out;
+  }
+
+  .gift-banner__top-btn:hover .gift-banner__top-btn-icon {
+    transform: translateX(4px);
+  }
+
+  .gift-banner__top-btn:hover .gift-banner__top-btn-label {
+    transform: translateX(-4px);
   }
 
   /* ============================================================
@@ -304,17 +361,6 @@
 
   .gift-banner__btn:hover .gift-banner__btn-label {
     transform: translateX(-4px);
-  }
-
-  /* ---- Yellow CTA (top bar — "CHOOSE GIFT") ----
-     Figma: 207×44px, bg: #FFF544, text: #000 */
-  .gift-banner__btn--yellow {
-    width: 207px;
-    height: 44px;
-    background-color: #FFF544;
-    color: #000;
-    font-size: 15px;
-    flex-shrink: 0;
   }
 
   /* ---- Black CTA ("SHOP NOW") ----
