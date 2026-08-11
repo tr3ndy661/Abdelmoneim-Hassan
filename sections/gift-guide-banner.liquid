@@ -49,6 +49,15 @@
     >
   {% endif %}
 
+  {%- comment -%} ---- Mobile-specific Frame Image ---- {%- endcomment -%}
+  <img
+    src="{{ 'Frame.png' | asset_url }}"
+    alt=""
+    aria-hidden="true"
+    class="gift-banner__illus gift-banner__illus--mobile"
+    loading="eager"
+  >
+
   {%- comment -%} ---- Top Utility Bar ---- {%- endcomment -%}
   <div class="gift-banner__top">
     <!-- Mobile Toggle (Hamburger/Close) -->
@@ -187,6 +196,10 @@
     width: 890px;
     height: 402px;
     object-fit: cover;
+  }
+
+  .gift-banner__illus--mobile {
+    display: none;
   }
 
   /* ============================================================
@@ -586,6 +599,10 @@
     }
 
     .gift-banner__illus--bottom {
+      display: none;
+    }
+
+    .gift-banner__illus--mobile {
       display: block;
       position: relative;
       top: auto;
