@@ -72,7 +72,11 @@
   {%- comment -%} ---- Black CTA Button ---- {%- endcomment -%}
   <a href="{{ section.settings.cta_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--black">
     <span class="gift-banner__btn-label">{{ section.settings.cta_text }}</span>
-    <span class="gift-banner__btn-dash" aria-hidden="true"></span>
+    <span class="gift-banner__btn-icon" aria-hidden="true">
+      <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 1L19 6M19 6L14 11M19 6H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
   </a>
 
   {%- comment -%} ---- Bottom Scrolling Ticker ---- {%- endcomment -%}
@@ -234,7 +238,7 @@
     position: relative;
     overflow: hidden;
     z-index: 1; /* establish stacking context */
-    transition: color 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 400ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 400ms ease-out;
   }
 
   .gift-banner__top-btn::before {
@@ -258,6 +262,7 @@
   .gift-banner__top-btn:hover,
   .gift-banner__top-btn:active {
     color: #FFF544;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .gift-banner__top-btn-label {
@@ -341,6 +346,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 12px;
     text-decoration: none;
     font-family: 'Jost', sans-serif;
     font-style: normal;
@@ -353,7 +359,7 @@
     overflow: hidden;
     box-sizing: border-box;
     z-index: 2; /* establish stacking context for animation */
-    transition: color 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 400ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 400ms ease-out;
   }
 
   /* Button label — shifts left on hover */
@@ -367,23 +373,17 @@
     transition: transform 300ms ease-out;
   }
 
-  /* Horizontal dash line (Figma: Line 15)
-     Positioned at ~78% from left, vertically centered.
-     Acts as a minimal arrow indicator. */
-  .gift-banner__btn-dash {
-    position: absolute;
-    left: 77.78%;
-    right: 10.63%;
-    top: 50%;
-    height: 1.5px;
-    background: currentColor;
-    transform: translateY(-50%);
+  /* Arrow icon */
+  .gift-banner__btn-icon {
+    display: inline-flex;
+    align-items: center;
     transition: transform 300ms ease-out;
+    z-index: 1;
   }
 
   /* Hover animation — Smart Animate 300ms ease-out */
-  .gift-banner__btn:hover .gift-banner__btn-dash {
-    transform: translateY(-50%) translateX(4px);
+  .gift-banner__btn:hover .gift-banner__btn-icon {
+    transform: translateX(4px);
   }
 
   .gift-banner__btn:hover .gift-banner__btn-label {
@@ -426,6 +426,7 @@
   .gift-banner__btn--black:hover,
   .gift-banner__btn--black:active {
     color: #000000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   /* ============================================================
