@@ -96,20 +96,6 @@
   {%- comment -%} ---- Description ---- {%- endcomment -%}
   <div class="gift-banner__description">{{ section.settings.description }}</div>
 
-  {%- comment -%} ---- Bottom Right Camera / Accessories ---- {%- endcomment -%}
-  {%- if section.settings.background_image != blank -%}
-    <img src="{{ section.settings.background_image | image_url: width: 1440 }}" alt="" class="gift-banner__illus gift-banner__illus--bottom">
-  {%- else -%}
-    <img src="{{ 'gift-guide-bg-bottom.png' | asset_url }}" alt="" class="gift-banner__illus gift-banner__illus--bottom">
-  {%- endif -%}
-
-  {%- comment -%} ---- Mobile-specific Frame Image ---- {%- endcomment -%}
-  {%- if section.settings.background_image_mobile != blank -%}
-    <img src="{{ section.settings.background_image_mobile | image_url: width: 750 }}" alt="" class="gift-banner__illus gift-banner__illus--mobile">
-  {%- else -%}
-    <img src="{{ 'Frame.png' | asset_url }}" alt="" class="gift-banner__illus gift-banner__illus--mobile">
-  {%- endif -%}
-
   {%- comment -%} ---- Black CTA Button ---- {%- endcomment -%}
   <a href="{{ section.settings.cta_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--black">
     <span class="gift-banner__btn-label">{{ section.settings.cta_text }}</span>
@@ -196,6 +182,7 @@
 
   /* Bottom illustration — right-aligned, leaves left side clear for text */
   .gift-banner__illus--bottom {
+    top: 442px;      /* 64 + 378 from Figma */
     left: 550px;
     width: 890px;
     height: 402px;
@@ -599,11 +586,6 @@
     }
 
     .gift-banner__illus--bottom {
-      display: none;
-    }
-
-    .gift-banner__illus--mobile {
-      display: block;
       position: relative;
       top: auto;
       left: auto;
@@ -718,14 +700,8 @@
     {
       "type": "image_picker",
       "id": "background_image",
-      "label": "Desktop background image",
+      "label": "Custom background image",
       "info": "Optional — overrides the default line-art illustrations. Use 1440×878px."
-    },
-    {
-      "type": "image_picker",
-      "id": "background_image_mobile",
-      "label": "Mobile background image",
-      "info": "Optional — overrides the default mobile frame illustration."
     },
     {
       "type": "color",
