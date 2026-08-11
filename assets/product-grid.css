@@ -430,13 +430,12 @@
  * ============================================================ */
 @media screen and (max-width: 768px) {
   .product-grid-section {
-    padding: 0 16.72px;
+    padding: 0 16px;
   }
 
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 4px;
-    margin-bottom: 40px;
+    gap: 16px;
   }
 
   /* Slightly smaller hotspot on mobile */
