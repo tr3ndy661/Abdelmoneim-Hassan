@@ -52,7 +52,7 @@
   {%- comment -%} ---- Top Utility Bar ---- {%- endcomment -%}
   <div class="gift-banner__top">
     <!-- Mobile Toggle (Hamburger/Close) -->
-    <button type="button" class="gift-banner__mobile-toggle" aria-expanded="false" aria-label="Toggle menu" onclick="document.getElementById('gift-banner-mobile-menu-{{ section.id }}').style.display = document.getElementById('gift-banner-mobile-menu-{{ section.id }}').style.display === 'none' ? 'block' : 'none'; this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');">
+    <button type="button" class="gift-banner__mobile-toggle" aria-expanded="false" aria-label="Toggle menu" onclick="document.getElementById('gift-banner-mobile-menu-{{ section.id }}').classList.toggle('is-open'); this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');">
       <span class="gift-banner__mobile-icon-menu">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </span>
@@ -76,8 +76,8 @@
   </div>
 
   <!-- Mobile Pushdown Menu -->
-  <div id="gift-banner-mobile-menu-{{ section.id }}" class="gift-banner__mobile-menu" style="display: none;">
-    <p class="gift-banner__mobile-subtext">{{ section.settings.top_subtext }}</p>
+  <div id="gift-banner-mobile-menu-{{ section.id }}" class="gift-banner__mobile-menu">
+    <p class="gift-banner__mobile-subtext">{{ section.settings.top_subtext_mobile | default: section.settings.top_subtext }}</p>
     <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn gift-banner__top-btn--mobile">
       <span class="gift-banner__top-btn-label">{{ section.settings.top_button_text }}</span>
       <span class="gift-banner__top-btn-icon" aria-hidden="true">
@@ -221,8 +221,7 @@
     box-sizing: border-box;
   }
 
-  .gift-banner__mobile-toggle,
-  .gift-banner__mobile-menu {
+  .gift-banner__mobile-toggle {
     display: none;
   }
 
@@ -529,6 +528,9 @@
       align-items: center;
       justify-content: center;
       order: 1;
+      background-color: #FFFFFF;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
     }
 
     .gift-banner__mobile-toggle {
@@ -558,9 +560,21 @@
     /* Mobile Pushdown Menu */
     .gift-banner__mobile-menu {
       background-color: #f4f4f4;
-      padding: 32px 24px;
       text-align: center;
       order: 2;
+      overflow: hidden;
+      max-height: 0;
+      padding: 0 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: max-height 400ms cubic-bezier(0.4, 0, 0.2, 1), padding 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), visibility 400ms;
+    }
+
+    .gift-banner__mobile-menu.is-open {
+      max-height: 250px;
+      padding: 32px 24px;
+      opacity: 1;
+      visibility: visible;
     }
 
     .gift-banner__mobile-subtext {
@@ -709,6 +723,12 @@
       "id": "top_subtext",
       "label": "Top subtext",
       "default": "Find the ideal gift for your loved ones."
+    },
+    {
+      "type": "text",
+      "id": "top_subtext_mobile",
+      "label": "Top subtext (Mobile)",
+      "default": "Get started with your \"Mi Solo\" kit"
     },
     {
       "type": "text",
