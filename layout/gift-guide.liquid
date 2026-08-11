@@ -56,11 +56,9 @@
     {% render 'chat-drawer' %}
 
     <div class="page-wrapper">
-      {%- comment -%}
       <div id="header-group">
         {% sections 'header-group' %}
       </div>
-      {%- endcomment -%}
 
       <script>
         /**
@@ -180,11 +178,9 @@
         {{ content_for_layout }}
       </main>
 
-      {%- comment -%}
       <footer>
         {% sections 'footer-group' %}
       </footer>
-      {%- endcomment -%}
     </div>
 
     {% render 'cart-drawer', render_wrapper: true %}

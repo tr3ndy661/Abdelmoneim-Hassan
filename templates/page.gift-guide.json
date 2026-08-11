@@ -16,7 +16,6 @@
  * template "page.gift-guide" from the template dropdown.
  */
 {
-  "layout": "gift-guide",
   "sections": {
     "gift_guide_banner": {
       "type": "gift-guide-banner",
