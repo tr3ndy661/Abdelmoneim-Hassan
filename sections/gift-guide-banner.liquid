@@ -1,21 +1,61 @@
 {% comment %}
   Gift Guide Banner Section
+  =========================
   Built from scratch — no Dawn components/snippets used, per test requirements.
-  Contains: top utility bar (logo + subtext + yellow CTA), main hero content
-  (heading + description + black CTA), and a bottom scrolling ticker.
+
+  Layout (matches Figma spec):
+    - Full-width background: white with line-art illustration images
+    - Top utility bar: logo (left) + subtext (center) + yellow CTA (right)
+    - Main hero content: heading + description + black CTA (left-aligned)
+    - Bottom scrolling ticker bar
+
+  Background images (gift-guide-bg-top.png / gift-guide-bg-bottom.png) are
+  hardcoded as static assets because they are decorative illustrations that
+  are part of the page design, not merchant-editable content. The merchant
+  CAN still override them via the optional image picker in the customizer.
+
+  Dimensions from Figma:
+    Banner:  1440 × 878px
+    Heading: Jost 500, 70px, #000, line-height 100%
+    Subtext: Jost 400, 20px, #000, line-height 140%
+    Yellow button: 207 × 44px, #FFF544
+    Black button:  220 × 50px, #000, at left:67 top:743
 {% endcomment %}
 
 <section class="gift-banner" style="background-color: {{ section.settings.background_color }};">
+  {%- comment -%}
+    Background illustration — two image halves that tile vertically
+    to cover the full 878px banner height. If the merchant uploads
+    a custom background via the customizer, it takes priority.
+  {%- endcomment -%}
   {% if section.settings.background_image %}
     <div class="gift-banner__bg">
       {{ section.settings.background_image | image_url: width: 1440 | image_tag:
-        loading: 'lazy',
+        loading: 'eager',
         alt: section.settings.heading,
         class: 'gift-banner__bg-img'
       }}
     </div>
+  {% else %}
+    <div class="gift-banner__bg gift-banner__bg--illustrations">
+      <img
+        src="{{ 'gift-guide-bg-top.png' | asset_url }}"
+        alt=""
+        class="gift-banner__bg-tile gift-banner__bg-tile--top"
+        loading="eager"
+        aria-hidden="true"
+      >
+      <img
+        src="{{ 'gift-guide-bg-bottom.png' | asset_url }}"
+        alt=""
+        class="gift-banner__bg-tile gift-banner__bg-tile--bottom"
+        loading="eager"
+        aria-hidden="true"
+      >
+    </div>
   {% endif %}
 
+  {%- comment -%} ---- Top utility bar ---- {%- endcomment -%}
   <div class="gift-banner__top">
     <p class="gift-banner__logo">{{ section.settings.logo_text }}</p>
     <p class="gift-banner__top-subtext">{{ section.settings.top_subtext }}</p>
@@ -27,6 +67,7 @@
     </a>
   </div>
 
+  {%- comment -%} ---- Main hero content ---- {%- endcomment -%}
   <div class="gift-banner__content">
     <h1 class="gift-banner__heading">{{ section.settings.heading }}</h1>
     <div class="gift-banner__description">{{ section.settings.description }}</div>
@@ -38,10 +79,11 @@
     </a>
   </div>
 
+  {%- comment -%} ---- Bottom scrolling ticker ---- {%- endcomment -%}
   {% if section.settings.ticker_text != blank %}
     <div class="gift-banner__ticker" aria-hidden="true">
       <div class="gift-banner__ticker-track">
-        {% comment %} Duplicated for seamless infinite scroll {% endcomment %}
+        {% comment %} Duplicated 6× for seamless infinite scroll loop {% endcomment %}
         {% for i in (1..6) %}
           <span class="gift-banner__ticker-item">{{ section.settings.ticker_text }}</span>
         {% endfor %}
@@ -51,6 +93,16 @@
 </section>
 
 <style>
+  /* ============================================================
+   * Gift Guide Banner — Styles
+   * ============================================================
+   * All dimensions match the Figma spec provided by the client.
+   * Font: Jost (loaded via Google Fonts in the asset CSS).
+   * ============================================================ */
+
+  @import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap');
+
+  /* ---- Section Container ---- */
   .gift-banner {
     position: relative;
     width: 100%;
@@ -59,8 +111,11 @@
     margin: 0 auto;
     overflow: hidden;
     font-family: 'Jost', sans-serif;
+    background-color: #fff;
   }
 
+  /* ---- Background ---- */
+  /* Single custom image (merchant-uploaded via customizer) */
   .gift-banner__bg {
     position: absolute;
     inset: 0;
@@ -74,7 +129,40 @@
     display: block;
   }
 
-  /* --- Top utility bar --- */
+  /* Default illustration background — two tiled halves.
+     Top image sits in the upper portion, bottom image below.
+     Together they fill the 878px banner seamlessly. */
+  .gift-banner__bg--illustrations {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .gift-banner__bg-tile {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Top tile: takes up roughly the upper 50% of the banner */
+  .gift-banner__bg-tile--top {
+    height: 50%;
+    object-position: center top;
+  }
+
+  /* Bottom tile: fills the remaining lower portion */
+  .gift-banner__bg-tile--bottom {
+    height: 50%;
+    object-position: center top;
+  }
+
+  /* ============================================================
+   * Top Utility Bar
+   * ============================================================
+   * Figma: flex row, items spaced between, padding 24px 67px.
+   * Logo left, subtext centered, yellow CTA right.
+   * ============================================================ */
   .gift-banner__top {
     position: relative;
     z-index: 2;
@@ -92,6 +180,7 @@
     text-transform: uppercase;
     color: #000;
     margin: 0;
+    white-space: nowrap;
   }
 
   .gift-banner__top-subtext {
@@ -104,13 +193,18 @@
     text-align: center;
   }
 
-  /* --- Buttons (shared base) ---
-     Both buttons share the same internal structure from Figma:
-       1. Left accent line (Rectangle 26036 — thin vertical border)
-       2. Centered text label ("choose yours" / "choose gift")
-       3. Right-side horizontal dash (Line 15 — acts as a minimal arrow indicator)
-     Hover animation (300ms ease-out): dash slides right, label shifts left.
-  */
+  /* ============================================================
+   * Buttons — Shared Base
+   * ============================================================
+   * Both buttons share the same Figma structure:
+   *   1. Left accent line (Rectangle 26036 — thin vertical border)
+   *   2. Centered uppercase text label
+   *   3. Right-side horizontal dash (Line 15 — minimal arrow indicator)
+   *
+   * Hover animation (Smart Animate 300ms ease-out):
+   *   - Dash slides right
+   *   - Label shifts left
+   * ============================================================ */
   .gift-banner__btn {
     display: inline-flex;
     align-items: center;
@@ -128,9 +222,8 @@
     box-sizing: border-box;
   }
 
-  /* --- Left accent line (Rectangle 26036) ---
-     Figma: left:0%, right:99.52% → ~0.48% wide = ~1px.
-     A thin vertical accent on the left edge of the button. */
+  /* Left accent line (Rectangle 26036)
+     Figma: 0.48% wide ≈ 1px thin vertical accent. */
   .gift-banner__btn-accent {
     position: absolute;
     left: 0;
@@ -141,8 +234,7 @@
     opacity: 0.3;
   }
 
-  /* --- Button label ---
-     Figma: centered text, shifts left on hover (Smart Animate). */
+  /* Button label — centered text that shifts left on hover */
   .gift-banner__btn-label {
     position: relative;
     z-index: 1;
@@ -152,10 +244,9 @@
     transition: transform 300ms ease-out;
   }
 
-  /* --- Right-side horizontal dash (Line 15) ---
+  /* Right-side horizontal dash (Line 15)
      Figma: left:77.78%, right:10.63%, vertically centered.
-     This is a decorative dash that acts as a minimal arrow indicator.
-     On hover it slides further right. */
+     Acts as a minimal arrow indicator → slides right on hover. */
   .gift-banner__btn-dash {
     position: absolute;
     left: 77.78%;
@@ -167,9 +258,7 @@
     transition: transform 300ms ease-out;
   }
 
-  /* --- Hover animation (both buttons) ---
-     Mirrors Figma "Change to Variant 2 / Smart Animate 300ms ease-out":
-     dash slides right, label shifts left. */
+  /* Hover — mirrors Figma Smart Animate 300ms ease-out */
   .gift-banner__btn:hover .gift-banner__btn-dash {
     transform: translateY(-50%) translateX(4px);
   }
@@ -178,7 +267,7 @@
     transform: translateX(-4px);
   }
 
-  /* --- Yellow button (top bar CTA) --- */
+  /* ---- Yellow Button (top bar — "CHOOSE GIFT") ---- */
   .gift-banner__btn--yellow {
     width: 207px;
     height: 44px;
@@ -187,8 +276,8 @@
     font-size: 15px;
   }
 
-  /* --- Black button ("Shop now" / "choose yours") ---
-     Figma: 220×50px, positioned at left:67px, top:743px. */
+  /* ---- Black Button ("SHOP NOW") ----
+     Figma: 220×50px, positioned absolutely at left:67, top:743. */
   .gift-banner__btn--black {
     position: absolute;
     top: 743px;
@@ -201,7 +290,13 @@
     z-index: 2;
   }
 
-  /* --- Main hero content --- */
+  /* ============================================================
+   * Main Hero Content
+   * ============================================================
+   * Figma: left-aligned text block over the illustrations.
+   * Heading: Jost 500 / 70px / #000 / line-height 100%
+   * Description: Jost 400 / 20px / #000 / line-height 140%
+   * ============================================================ */
   .gift-banner__content {
     position: relative;
     z-index: 2;
@@ -227,7 +322,12 @@
     margin: 0 0 40px;
   }
 
-  /* --- Ticker --- */
+  /* ============================================================
+   * Bottom Ticker
+   * ============================================================
+   * Black bar at the absolute bottom. Text scrolls infinitely
+   * left via CSS animation (duplicated 6× for seamless loop).
+   * ============================================================ */
   .gift-banner__ticker {
     position: absolute;
     bottom: 0;
@@ -260,17 +360,31 @@
     to { transform: translateX(-50%); }
   }
 
+  /* Accessibility: respect reduced motion preference */
   @media (prefers-reduced-motion: reduce) {
     .gift-banner__ticker-track { animation: none; }
     .gift-banner__btn-dash,
     .gift-banner__btn-label { transition: none; }
   }
 
-  /* --- Mobile --- */
+  /* ============================================================
+   * Mobile Responsive (≤749px)
+   * ============================================================ */
   @media screen and (max-width: 749px) {
     .gift-banner {
       height: auto;
       min-height: 100vh;
+    }
+
+    .gift-banner__bg--illustrations {
+      /* On mobile, let illustrations fill and overflow naturally */
+      min-height: 100%;
+    }
+
+    .gift-banner__bg-tile--top,
+    .gift-banner__bg-tile--bottom {
+      height: auto;
+      min-height: 300px;
     }
 
     .gift-banner__top {
@@ -322,7 +436,8 @@
     {
       "type": "image_picker",
       "id": "background_image",
-      "label": "Background image"
+      "label": "Custom background image",
+      "info": "Optional — overrides the default line-art illustrations. Use 1440×878px for best results."
     },
     {
       "type": "color",
