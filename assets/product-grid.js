@@ -381,8 +381,16 @@
       });
     }
 
-    /* ---- Click outside → close all popups ---- */
+    /* ---- Click outside → close popups and dropdowns ---- */
     document.addEventListener('click', function (e) {
+      // Close dropdowns if clicking outside of them
+      if (!e.target.closest('.custom-select')) {
+        document.querySelectorAll('.custom-select.is-open').forEach(function (select) {
+          select.classList.remove('is-open');
+          select.querySelector('.custom-select__trigger').setAttribute('aria-expanded', 'false');
+        });
+      }
+
       if (
         e.target.closest('.product-grid__popup') ||
         e.target.closest('.product-grid__box-btn')
@@ -392,7 +400,7 @@
       closeAllPopups();
     });
 
-    /* ---- Color Swatch Selection ---- */
+    /* ---- Color Swatch Selection (with Slider) ---- */
     document.addEventListener('click', function(e) {
       var colorBox = e.target.closest('.product-grid__color-box');
       if (colorBox) {
@@ -407,12 +415,66 @@
         // Add to clicked box
         colorBox.classList.add('is-selected');
 
+        // Update Slider position and color
+        var slider = group.querySelector('.product-grid__color-slider');
+        if (slider) {
+          slider.style.transform = 'translateX(' + colorBox.offsetLeft + 'px)';
+          slider.style.backgroundColor = colorBox.getAttribute('data-color');
+        }
+
         // Update the hidden select element
         var select = group.querySelector('select.product-grid__option-select');
         if (select) {
           select.value = colorBox.getAttribute('data-value');
           select.dispatchEvent(new Event('change', { bubbles: true }));
         }
+      }
+    });
+
+    /* ---- Custom Dropdown Logic ---- */
+    document.addEventListener('click', function(e) {
+      // Handle Trigger Click
+      var trigger = e.target.closest('.custom-select__trigger');
+      if (trigger) {
+        var customSelect = trigger.closest('.custom-select');
+        var isOpen = customSelect.classList.contains('is-open');
+        
+        // Close all other dropdowns first
+        document.querySelectorAll('.custom-select.is-open').forEach(function (select) {
+          select.classList.remove('is-open');
+          select.querySelector('.custom-select__trigger').setAttribute('aria-expanded', 'false');
+        });
+
+        // Toggle this dropdown
+        if (!isOpen) {
+          customSelect.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+        return;
+      }
+
+      // Handle Option Click
+      var option = e.target.closest('.custom-select__option');
+      if (option) {
+        var customSelect = option.closest('.custom-select');
+        var textNode = customSelect.querySelector('.custom-select__text');
+        var hiddenSelect = customSelect.nextElementSibling; // The hidden <select>
+        var value = option.getAttribute('data-value');
+
+        // Update text
+        if (textNode) {
+          textNode.textContent = option.textContent;
+        }
+
+        // Update hidden select
+        if (hiddenSelect && hiddenSelect.tagName.toLowerCase() === 'select') {
+          hiddenSelect.value = value;
+          hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        // Close dropdown
+        customSelect.classList.remove('is-open');
+        customSelect.querySelector('.custom-select__trigger').setAttribute('aria-expanded', 'false');
       }
     });
 
