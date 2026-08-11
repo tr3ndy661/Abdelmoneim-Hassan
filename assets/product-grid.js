@@ -352,12 +352,7 @@
      * Event Listeners
      * ============================================================ */
 
-    /* ---- Hotspot click → toggle popup ---- */
-    hotspots.forEach(function (btn) {
-      btn.addEventListener('click', function (e) {
-        e.stopPropagation(); /* Prevent document click handler from closing */
-        var gridItem = btn.closest('.product-grid__item');
-        var blockId = gridItem ? gridItem.dataset.blockId : null;
+    /* ---- Popup event listeners ---- */
     /* ---- Popup close button ---- */
     section.querySelectorAll('.product-grid__popup-close').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
