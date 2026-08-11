@@ -88,7 +88,7 @@
       /* If this popup was closed, open it now */
       if (!isCurrentlyOpen) {
         popup.setAttribute('aria-hidden', 'false');
-        if (gridItem) gridItem.style.zIndex = '100';
+        if (gridItem) gridItem.style.zIndex = '9999';
         if (hotspot) hotspot.setAttribute('aria-expanded', 'true');
         if (backdrop) backdrop.classList.add('product-grid__backdrop--visible');
       }
