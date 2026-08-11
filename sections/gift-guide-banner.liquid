@@ -51,9 +51,34 @@
 
   {%- comment -%} ---- Top Utility Bar ---- {%- endcomment -%}
   <div class="gift-banner__top">
+    <!-- Mobile Toggle (Hamburger/Close) -->
+    <button type="button" class="gift-banner__mobile-toggle" aria-expanded="false" aria-label="Toggle menu" onclick="document.getElementById('gift-banner-mobile-menu-{{ section.id }}').style.display = document.getElementById('gift-banner-mobile-menu-{{ section.id }}').style.display === 'none' ? 'block' : 'none'; this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');">
+      <span class="gift-banner__mobile-icon-menu">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <span class="gift-banner__mobile-icon-close">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+    </button>
+
     <p class="gift-banner__logo">{{ section.settings.logo_text }}</p>
-    <p class="gift-banner__top-subtext">{{ section.settings.top_subtext }}</p>
-    <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn">
+
+    <!-- Desktop Subtext & CTA -->
+    <p class="gift-banner__top-subtext gift-banner__desktop-only">{{ section.settings.top_subtext }}</p>
+    <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn gift-banner__desktop-only">
+      <span class="gift-banner__top-btn-label">{{ section.settings.top_button_text }}</span>
+      <span class="gift-banner__top-btn-icon" aria-hidden="true">
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 1L19 6M19 6L14 11M19 6H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+  </div>
+
+  <!-- Mobile Pushdown Menu -->
+  <div id="gift-banner-mobile-menu-{{ section.id }}" class="gift-banner__mobile-menu" style="display: none;">
+    <p class="gift-banner__mobile-subtext">{{ section.settings.top_subtext }}</p>
+    <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn gift-banner__top-btn--mobile">
       <span class="gift-banner__top-btn-label">{{ section.settings.top_button_text }}</span>
       <span class="gift-banner__top-btn-icon" aria-hidden="true">
         <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -194,6 +219,11 @@
     padding: 0 67px;
     height: 64px;
     box-sizing: border-box;
+  }
+
+  .gift-banner__mobile-toggle,
+  .gift-banner__mobile-menu {
+    display: none;
   }
 
   .gift-banner__logo {
@@ -477,25 +507,80 @@
 
   /* ============================================================
    * Mobile Responsive (≤749px)
-   * ============================================================
-   * Collapses to a single-column flow layout.
-   * Absolute positioning switches to relative/static for natural
-   * stacking. Images scale down proportionally.
    * ============================================================ */
   @media screen and (max-width: 749px) {
+    .gift-banner__desktop-only {
+      display: none !important;
+    }
+
     .gift-banner {
       height: auto;
       min-height: 100vh;
       padding-bottom: 40px; /* Space for ticker */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar layout on mobile */
+    .gift-banner__top {
+      position: relative;
+      height: 64px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      order: 1;
+    }
+
+    .gift-banner__mobile-toggle {
+      display: block;
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      color: #000;
+      z-index: 10;
+    }
+
+    .gift-banner__mobile-toggle[aria-expanded="true"] .gift-banner__mobile-icon-menu { display: none; }
+    .gift-banner__mobile-toggle[aria-expanded="false"] .gift-banner__mobile-icon-menu { display: block; }
+    
+    .gift-banner__mobile-toggle[aria-expanded="true"] .gift-banner__mobile-icon-close { display: block; }
+    .gift-banner__mobile-toggle[aria-expanded="false"] .gift-banner__mobile-icon-close { display: none; }
+
+    .gift-banner__logo {
+      margin: 0;
+    }
+
+    /* Mobile Pushdown Menu */
+    .gift-banner__mobile-menu {
+      background-color: #f4f4f4;
+      padding: 32px 24px;
+      text-align: center;
+      order: 2;
+    }
+
+    .gift-banner__mobile-subtext {
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 140%;
+      color: #000;
+      margin: 0 0 20px 0;
+    }
+
+    .gift-banner__top-btn--mobile {
+      width: 100%;
+      max-width: 300px;
     }
 
     /* Stack illustrations vertically, scale to fit */
     .gift-banner__illus--top {
-      position: relative;
-      top: auto;
-      left: auto;
-      width: 100%;
-      height: auto;
+      display: none; /* Hide top frame on mobile */
     }
 
     .gift-banner__illus--bottom {
@@ -504,20 +589,18 @@
       left: auto;
       width: 100%;
       height: auto;
+      order: 5;
+      margin-top: 24px;
     }
 
-    /* Top bar: stack vertically */
-    .gift-banner__top {
+    .gift-banner__illus--custom {
       position: relative;
-      height: auto;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 16px 24px;
-    }
-
-    .gift-banner__top-subtext {
-      text-align: left;
+      top: auto;
+      left: auto;
+      width: 100%;
+      height: 300px;
+      order: 5;
+      margin-top: 24px;
     }
 
     /* Text content: switch to static flow */
@@ -525,20 +608,24 @@
       position: relative;
       top: auto;
       left: auto;
-      padding: 24px 24px 0;
-      font-size: 36px;
-      line-height: 36px;
+      padding: 40px 24px 0;
+      font-size: 40px;
+      line-height: 1.1;
       white-space: normal;
+      text-align: center;
+      order: 3;
     }
 
     .gift-banner__description {
       position: relative;
       top: auto;
       left: auto;
-      width: auto;
+      width: 100%;
       padding: 16px 24px 0;
       font-size: 16px;
-      line-height: 24px;
+      line-height: 1.5;
+      text-align: center;
+      order: 4;
     }
 
     .gift-banner__btn--black {
@@ -546,11 +633,10 @@
       top: auto;
       left: auto;
       width: calc(100% - 48px);
-      margin: 24px 24px 0;
-    }
-
-    .gift-banner__btn--yellow {
-      width: 100%;
+      max-width: 300px;
+      margin: -25px auto 30px auto; /* Negative top margin to overlap illustration */
+      order: 6;
+      align-self: center;
     }
   }
 </style>
