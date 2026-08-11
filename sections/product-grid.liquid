@@ -66,6 +66,11 @@
   class="product-grid-section"
   data-section-id="{{ section.id }}"
 >
+  {%- if section.settings.heading != blank -%}
+    <div class="product-grid__header">
+      <h2 class="product-grid__heading">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
   {%- comment -%}
     Mobile backdrop overlay — only visible on small screens (≤768px)
     when a popup is open. Clicking it closes the popup.
@@ -75,45 +80,37 @@
   <div class="product-grid">
     {%- for block in section.blocks -%}
       {%- assign product = block.settings.product -%}
+      {%- capture asset_image_name -%}
+        {%- case forloop.index -%}
+          {%- when 1 -%}image 830(1).png
+          {%- when 2 -%}image 831.png
+          {%- when 3 -%}image 832.png
+          {%- when 4 -%}image 833.png
+          {%- when 5 -%}image 834.png
+          {%- when 6 -%}image 835.png
+          {%- else -%}product-1
+        {%- endcase -%}
+      {%- endcapture -%}
+      {%- assign asset_image_name = asset_image_name | strip -%}
 
-      {%- if product != blank -%}
-        {%- comment -%}
-          ---- Product Grid Item ----
-          Each item contains:
-            1. The product image with a hotspot "+" button
-            2. A hidden popup with product details & Add to Cart
-          The popup is pre-rendered with Liquid using real product
-          data — not hardcoded placeholder content.
-        {%- endcomment -%}
-        <div
-          class="product-grid__item"
-          {{ block.shopify_attributes }}
-          data-block-id="{{ block.id }}"
-        >
-          {%- comment -%} ---- Product Image + Hotspot ---- {%- endcomment -%}
-          <div class="product-grid__image-wrapper">
-            {%- if product.featured_image != blank -%}
-              <img
-                src="{{ product.featured_image | image_url: width: 866 }}"
-                srcset="
-                  {{ product.featured_image | image_url: width: 433 }} 433w,
-                  {{ product.featured_image | image_url: width: 866 }} 866w
-                "
-                sizes="(max-width: 768px) 45vw, 433px"
-                alt="{{ product.featured_image.alt | default: product.title | escape }}"
-                width="433"
-                height="444"
-                loading="lazy"
-              >
-            {%- endif -%}
+      <div
+        class="product-grid__item {% if product == blank %}product-grid__item--empty{% endif %}"
+        {{ block.shopify_attributes }}
+        data-block-id="{{ block.id }}"
+      >
+        <div class="product-grid__image-wrapper">
+          {%- if asset_image_name contains '.png' -%}
+            <img
+              src="{{ asset_image_name | asset_url }}"
+              alt="{{ product.title | escape }}"
+              class="product-grid__image"
+              loading="lazy"
+            >
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'product-grid__placeholder-svg' }}
+          {%- endif -%}
 
-            {%- comment -%}
-              Hotspot "+" button — the merchant can reposition it per
-              block using the "Hotspot horizontal/vertical position"
-              range sliders in the customizer. Default: 70% x, 20% y
-              (upper-right area, matching the Figma placement on
-              the model's shoulder/chest).
-            {%- endcomment -%}
+          {%- if product != blank -%}
             <button
               class="product-grid__hotspot"
               type="button"
@@ -124,14 +121,10 @@
             >
               <span class="product-grid__hotspot-icon">+</span>
             </button>
-          </div>
+          {%- endif -%}
+        </div>
 
-          {%- comment -%}
-            ---- Product Popup ----
-            Pre-rendered with Liquid so all product data (title,
-            price, description, variants) comes from the real
-            Shopify product object — not hardcoded.
-          {%- endcomment -%}
+        {%- if product != blank -%}
           <div
             class="product-grid__popup"
             data-popup-id="{{ block.id }}"
@@ -154,13 +147,6 @@
                 {{ product.description }}
               </div>
 
-              {%- comment -%}
-                ---- Variant Selection Form ----
-                Renders a <select> dropdown for each product option
-                (typically Size and Color). The JS uses these to
-                resolve the correct Shopify variant ID before
-                submitting to /cart/add.js.
-              {%- endcomment -%}
               <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
                 {%- for option in product.options_with_values -%}
                   <div class="product-grid__option-group">
@@ -184,34 +170,13 @@
                 </button>
               </form>
 
-              {%- comment -%}
-                Variant data as JSON for client-side variant resolution.
-                The JS parses this to map selected option values →
-                variant ID without needing an additional API call.
-              {%- endcomment -%}
               <script type="application/json" data-variants>
                 {{ product.variants | json }}
               </script>
             </div>
           </div>
-        </div>
-
-      {%- else -%}
-        {%- comment -%}
-          ---- Empty Placeholder ----
-          Shown when the merchant hasn't assigned a product to this
-          block yet. Uses Shopify's built-in placeholder SVGs.
-        {%- endcomment -%}
-        <div
-          class="product-grid__item product-grid__item--empty"
-          {{ block.shopify_attributes }}
-          data-block-id="{{ block.id }}"
-        >
-          <div class="product-grid__image-wrapper product-grid__image-wrapper--placeholder">
-            {{ 'product-1' | placeholder_svg_tag: 'product-grid__placeholder-svg' }}
-          </div>
-        </div>
-      {%- endif -%}
+        {%- endif -%}
+      </div>
     {%- endfor -%}
   </div>
 </section>
@@ -223,7 +188,14 @@
   "name": "Product Grid",
   "tag": "section",
   "class": "product-grid-section-wrapper",
-  "settings": [],
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Tisso vison in the wild"
+    }
+  ],
   "max_blocks": 6,
   "blocks": [
     {
