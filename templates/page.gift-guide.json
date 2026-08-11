@@ -6,27 +6,22 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- *
- * Custom page template for the Gift Guide landing page.
- * Contains exactly 2 custom-built sections (no Dawn components):
- *   1. Gift Guide Banner — hero with top bar, CTA, and ticker
- *   2. Product Grid — 3×2 image grid with hotspot popups
- *
- * To use: create a Page in Shopify Admin, then assign the
- * template "page.gift-guide" from the template dropdown.
  */
 {
   "sections": {
     "gift_guide_banner": {
       "type": "gift-guide-banner",
       "settings": {
-        "background_color": "#FFFFFF",
+        "background_color": "#ffffff",
         "logo_text": "Tisso Vison",
         "top_subtext": "Find the ideal gift for your loved ones.",
+        "top_subtext_mobile": "Get started with your \"Mi Solo\" kit",
         "top_button_text": "Choose gift",
+        "top_button_link": "",
         "heading": "The Gift Guide",
         "description": "<p>Discover Joy: Your Ultimate Holiday Gift Destination.</p>",
         "cta_text": "Shop now",
+        "cta_link": "",
         "ticker_text": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
       }
     },
@@ -36,6 +31,8 @@
         "product_1": {
           "type": "product_block",
           "settings": {
+            "custom_image": "shopify://shop_images/image_830_1.png",
+            "product": "",
             "hotspot_x": 70,
             "hotspot_y": 20
           }
@@ -43,6 +40,8 @@
         "product_2": {
           "type": "product_block",
           "settings": {
+            "custom_image": "shopify://shop_images/image_831.png",
+            "product": "",
             "hotspot_x": 70,
             "hotspot_y": 20
           }
@@ -50,6 +49,8 @@
         "product_3": {
           "type": "product_block",
           "settings": {
+            "custom_image": "shopify://shop_images/image_832.png",
+            "product": "",
             "hotspot_x": 70,
             "hotspot_y": 20
           }
@@ -57,6 +58,8 @@
         "product_4": {
           "type": "product_block",
           "settings": {
+            "custom_image": "shopify://shop_images/image_833.png",
+            "product": "",
             "hotspot_x": 70,
             "hotspot_y": 20
           }
@@ -64,6 +67,8 @@
         "product_5": {
           "type": "product_block",
           "settings": {
+            "custom_image": "shopify://shop_images/image_834.png",
+            "product": "",
             "hotspot_x": 70,
             "hotspot_y": 20
           }
@@ -71,6 +76,8 @@
         "product_6": {
           "type": "product_block",
           "settings": {
+            "custom_image": "shopify://shop_images/image_835.png",
+            "product": "",
             "hotspot_x": 70,
             "hotspot_y": 20
           }
@@ -84,7 +91,9 @@
         "product_5",
         "product_6"
       ],
-      "settings": {}
+      "settings": {
+        "heading": "Tisso vison in the wild"
+      }
     }
   },
   "order": [
