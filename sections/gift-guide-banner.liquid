@@ -515,8 +515,7 @@
 
     .gift-banner {
       height: auto;
-      min-height: 100vh;
-      padding-bottom: 40px; /* Space for ticker */
+      padding-bottom: 0;
       display: flex;
       flex-direction: column;
     }
@@ -591,6 +590,7 @@
       height: auto;
       order: 5;
       margin-top: 24px;
+      margin-bottom: 0;
     }
 
     .gift-banner__illus--custom {
@@ -601,6 +601,7 @@
       height: 300px;
       order: 5;
       margin-top: 24px;
+      margin-bottom: 0;
     }
 
     /* Text content: switch to static flow */
@@ -608,9 +609,9 @@
       position: relative;
       top: auto;
       left: auto;
-      padding: 40px 24px 0;
-      font-size: 40px;
-      line-height: 1.1;
+      padding: 32px 16px 0;
+      font-size: 32px;
+      line-height: 1.2;
       white-space: normal;
       text-align: center;
       order: 3;
@@ -621,8 +622,8 @@
       top: auto;
       left: auto;
       width: 100%;
-      padding: 16px 24px 0;
-      font-size: 16px;
+      padding: 16px 16px 0;
+      font-size: 15px;
       line-height: 1.5;
       text-align: center;
       order: 4;
@@ -632,11 +633,42 @@
       position: relative;
       top: auto;
       left: auto;
-      width: calc(100% - 48px);
+      width: calc(100% - 32px);
       max-width: 300px;
-      margin: -25px auto 30px auto; /* Negative top margin to overlap illustration */
+      margin: -70px auto 20px auto; /* overlaps image exactly */
       order: 6;
       align-self: center;
+      z-index: 5;
+    }
+
+    /* Ticker on mobile: static gray banner */
+    .gift-banner__ticker {
+      position: relative;
+      bottom: auto;
+      left: auto;
+      background-color: #f4f4f4;
+      padding: 16px 20px;
+      order: 7;
+      z-index: 1;
+    }
+
+    .gift-banner__ticker-track {
+      animation: none;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .gift-banner__ticker-item {
+      color: #000;
+      font-size: 12px;
+      white-space: normal;
+      padding: 0;
+      text-align: center;
+    }
+
+    .gift-banner__ticker-item:not(:first-child) {
+      display: none;
     }
   }
 </style>
