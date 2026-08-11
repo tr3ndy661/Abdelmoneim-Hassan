@@ -1,0 +1,276 @@
+{%- comment -%}
+  ============================================================
+  Product Grid Section — sections/product-grid.liquid
+  ============================================================
+  Displays up to 6 product image blocks in a 3×2 grid with
+  interactive hotspot "+" buttons. Each block's product is
+  selectable by the merchant via the Shopify theme customizer
+  (product picker per block).
+
+  Clicking a hotspot opens a compact popup showing the product's
+  name, price, description, and variant options (Size/Color)
+  with a working Add to Cart button.
+
+  Built entirely from scratch — no Dawn sections, snippets, or
+  components are reused here.
+
+  Dependencies:
+    - assets/product-grid.css  (layout & styling)
+    - assets/product-grid.js   (popup logic & cart API)
+  ============================================================
+{%- endcomment -%}
+
+{{- 'product-grid.css' | asset_url | stylesheet_tag -}}
+
+{%- comment -%}
+  ============================================================
+  Soft Winter Jacket — Variant ID Lookup
+  ============================================================
+  The project spec requires that when a customer selects
+  Black + Medium for ANY product, the "Soft Winter Jacket"
+  must automatically be added to the cart alongside it.
+
+  We resolve the jacket's first available variant ID here in
+  Liquid (server-side) and pass it to JavaScript via a global
+  variable. This avoids an extra client-side API call.
+
+  `all_products` is limited to 20 unique handles per page,
+  but we only access one handle here so that's well within
+  the limit. If the product doesn't exist, the variable is
+  set to null and the JS auto-add logic gracefully skips.
+
+  The handle 'soft-winter-jacket' is derived from the product
+  title "Soft Winter Jacket" via Shopify's automatic
+  handleization (lowercase + hyphens).
+  ============================================================
+{%- endcomment -%}
+{%- assign swj_product = all_products['soft-winter-jacket'] -%}
+{%- if swj_product != blank -%}
+  {%- assign swj_variant_id = swj_product.first_available_variant.id
+    | default: swj_product.variants.first.id -%}
+{%- else -%}
+  {%- assign swj_variant_id = nil -%}
+{%- endif -%}
+
+<script>
+  /**
+   * Soft Winter Jacket variant ID — resolved server-side via Liquid.
+   * Used by product-grid.js for the conditional auto-add feature.
+   * Value is null if the product doesn't exist in the store.
+   */
+  window.__softWinterJacketVariantId = {{ swj_variant_id | default: 'null' }};
+</script>
+
+<section
+  id="product-grid-{{ section.id }}"
+  class="product-grid-section"
+  data-section-id="{{ section.id }}"
+>
+  {%- comment -%}
+    Mobile backdrop overlay — only visible on small screens (≤768px)
+    when a popup is open. Clicking it closes the popup.
+  {%- endcomment -%}
+  <div class="product-grid__backdrop" aria-hidden="true"></div>
+
+  <div class="product-grid">
+    {%- for block in section.blocks -%}
+      {%- assign product = block.settings.product -%}
+
+      {%- if product != blank -%}
+        {%- comment -%}
+          ---- Product Grid Item ----
+          Each item contains:
+            1. The product image with a hotspot "+" button
+            2. A hidden popup with product details & Add to Cart
+          The popup is pre-rendered with Liquid using real product
+          data — not hardcoded placeholder content.
+        {%- endcomment -%}
+        <div
+          class="product-grid__item"
+          {{ block.shopify_attributes }}
+          data-block-id="{{ block.id }}"
+        >
+          {%- comment -%} ---- Product Image + Hotspot ---- {%- endcomment -%}
+          <div class="product-grid__image-wrapper">
+            {%- if product.featured_image != blank -%}
+              <img
+                src="{{ product.featured_image | image_url: width: 866 }}"
+                srcset="
+                  {{ product.featured_image | image_url: width: 433 }} 433w,
+                  {{ product.featured_image | image_url: width: 866 }} 866w
+                "
+                sizes="(max-width: 768px) 45vw, 433px"
+                alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                width="433"
+                height="444"
+                loading="lazy"
+              >
+            {%- endif -%}
+
+            {%- comment -%}
+              Hotspot "+" button — the merchant can reposition it per
+              block using the "Hotspot horizontal/vertical position"
+              range sliders in the customizer. Default: 70% x, 20% y
+              (upper-right area, matching the Figma placement on
+              the model's shoulder/chest).
+            {%- endcomment -%}
+            <button
+              class="product-grid__hotspot"
+              type="button"
+              aria-label="View {{ product.title | escape }} details"
+              aria-expanded="false"
+              data-product-id="{{ product.id }}"
+              style="--hotspot-x: {{ block.settings.hotspot_x }}%; --hotspot-y: {{ block.settings.hotspot_y }}%;"
+            >
+              <span class="product-grid__hotspot-icon">+</span>
+            </button>
+          </div>
+
+          {%- comment -%}
+            ---- Product Popup ----
+            Pre-rendered with Liquid so all product data (title,
+            price, description, variants) comes from the real
+            Shopify product object — not hardcoded.
+          {%- endcomment -%}
+          <div
+            class="product-grid__popup"
+            data-popup-id="{{ block.id }}"
+            aria-hidden="true"
+            role="dialog"
+            aria-label="{{ product.title | escape }} details"
+          >
+            <div class="product-grid__popup-inner">
+              <button
+                class="product-grid__popup-close"
+                type="button"
+                aria-label="Close product details"
+              >
+                &times;
+              </button>
+
+              <h3 class="product-grid__popup-title">{{ product.title }}</h3>
+              <p class="product-grid__popup-price">{{ product.price | money }}</p>
+              <div class="product-grid__popup-description">
+                {{ product.description }}
+              </div>
+
+              {%- comment -%}
+                ---- Variant Selection Form ----
+                Renders a <select> dropdown for each product option
+                (typically Size and Color). The JS uses these to
+                resolve the correct Shopify variant ID before
+                submitting to /cart/add.js.
+              {%- endcomment -%}
+              <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
+                {%- for option in product.options_with_values -%}
+                  <div class="product-grid__option-group">
+                    <label for="option-{{ block.id }}-{{ option.name | handleize }}">
+                      {{ option.name }}
+                    </label>
+                    <select
+                      id="option-{{ block.id }}-{{ option.name | handleize }}"
+                      class="product-grid__option-select"
+                      data-option-index="{{ forloop.index0 }}"
+                    >
+                      {%- for value in option.values -%}
+                        <option value="{{ value | escape }}">{{ value }}</option>
+                      {%- endfor -%}
+                    </select>
+                  </div>
+                {%- endfor -%}
+
+                <button type="submit" class="product-grid__add-to-cart">
+                  Add to Cart
+                </button>
+              </form>
+
+              {%- comment -%}
+                Variant data as JSON for client-side variant resolution.
+                The JS parses this to map selected option values →
+                variant ID without needing an additional API call.
+              {%- endcomment -%}
+              <script type="application/json" data-variants>
+                {{ product.variants | json }}
+              </script>
+            </div>
+          </div>
+        </div>
+
+      {%- else -%}
+        {%- comment -%}
+          ---- Empty Placeholder ----
+          Shown when the merchant hasn't assigned a product to this
+          block yet. Uses Shopify's built-in placeholder SVGs.
+        {%- endcomment -%}
+        <div
+          class="product-grid__item product-grid__item--empty"
+          {{ block.shopify_attributes }}
+          data-block-id="{{ block.id }}"
+        >
+          <div class="product-grid__image-wrapper product-grid__image-wrapper--placeholder">
+            {{ 'product-1' | placeholder_svg_tag: 'product-grid__placeholder-svg' }}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<script src="{{ 'product-grid.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Product Grid",
+  "tag": "section",
+  "class": "product-grid-section-wrapper",
+  "settings": [],
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "product_block",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Select which product appears in this grid slot."
+        },
+        {
+          "type": "range",
+          "id": "hotspot_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 70,
+          "label": "Hotspot horizontal position (%)",
+          "info": "Move the '+' button left (0%) or right (100%) within the image."
+        },
+        {
+          "type": "range",
+          "id": "hotspot_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 20,
+          "label": "Hotspot vertical position (%)",
+          "info": "Move the '+' button up (0%) or down (100%) within the image."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Grid",
+      "blocks": [
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" }
+      ]
+    }
+  ]
+}
+{% endschema %}
