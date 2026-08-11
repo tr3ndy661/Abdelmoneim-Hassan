@@ -610,7 +610,9 @@
       top: auto;
       left: auto;
       width: 100%;
-      height: auto;
+      height: 360px; /* fixed height to allow cropping */
+      object-fit: cover;
+      object-position: center; /* centers the camera lens */
       order: 5;
       margin-top: 24px;
       margin-bottom: 0;
@@ -663,6 +665,16 @@
       z-index: 5;
     }
 
+    /* Disable hover slide animation on mobile */
+    .gift-banner__btn--black::before {
+      display: none;
+    }
+    .gift-banner__btn--black:hover,
+    .gift-banner__btn--black:active {
+      color: #ffffff;
+      box-shadow: none;
+    }
+
     /* Ticker on mobile: static gray banner */
     .gift-banner__ticker {
       position: relative;
@@ -672,6 +684,7 @@
       padding: 16px 20px;
       order: 7;
       z-index: 1;
+      margin-bottom: 40px; /* gap under the ticker on mobile */
     }
 
     .gift-banner__ticker-track {

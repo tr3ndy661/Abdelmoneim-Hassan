@@ -31,6 +31,24 @@
 }
 
 /* ============================================================
+ * Header / Title
+ * ============================================================ */
+.product-grid__header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 0 16px;
+}
+
+.product-grid__heading {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: #000;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
  * Grid Layout
  * 3 equal columns with 30px gap between items.
  * Grid items don't clip overflow so the popup can extend beyond

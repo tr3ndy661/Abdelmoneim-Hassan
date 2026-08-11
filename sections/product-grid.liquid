@@ -80,18 +80,13 @@
   <div class="product-grid">
     {%- for block in section.blocks -%}
       {%- assign product = block.settings.product -%}
-      {%- capture asset_image_name -%}
-        {%- case forloop.index -%}
-          {%- when 1 -%}image 830(1).png
-          {%- when 2 -%}image 831.png
-          {%- when 3 -%}image 832.png
-          {%- when 4 -%}image 833.png
-          {%- when 5 -%}image 834.png
-          {%- when 6 -%}image 835.png
-          {%- else -%}product-1
-        {%- endcase -%}
-      {%- endcapture -%}
-      {%- assign asset_image_name = asset_image_name | strip -%}
+      {%- assign asset_image_name = '' -%}
+      {%- if forloop.index == 1 -%}{%- assign asset_image_name = 'image 830(1).png' -%}{%- endif -%}
+      {%- if forloop.index == 2 -%}{%- assign asset_image_name = 'image 831.png' -%}{%- endif -%}
+      {%- if forloop.index == 3 -%}{%- assign asset_image_name = 'image 832.png' -%}{%- endif -%}
+      {%- if forloop.index == 4 -%}{%- assign asset_image_name = 'image 833.png' -%}{%- endif -%}
+      {%- if forloop.index == 5 -%}{%- assign asset_image_name = 'image 834.png' -%}{%- endif -%}
+      {%- if forloop.index == 6 -%}{%- assign asset_image_name = 'image 835.png' -%}{%- endif -%}
 
       <div
         class="product-grid__item {% if product == blank %}product-grid__item--empty{% endif %}"
