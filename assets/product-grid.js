@@ -363,10 +363,10 @@
 
     section.querySelectorAll('.product-grid__item').forEach(function (item) {
       var blockId = item.getAttribute('data-block-id');
-      var hotspotBtn = item.querySelector('.product-grid__hotspot');
+      var boxBtn = item.querySelector('.product-grid__box-btn');
 
-      if (hotspotBtn) {
-        hotspotBtn.addEventListener('click', function (e) {
+      if (boxBtn) {
+        boxBtn.addEventListener('click', function (e) {
           e.stopPropagation();
           togglePopup(blockId);
         });
@@ -382,9 +382,9 @@
     document.addEventListener('click', function (e) {
       if (
         e.target.closest('.product-grid__popup') ||
-        e.target.closest('.product-grid__hotspot')
+        e.target.closest('.product-grid__box-btn')
       ) {
-        return; /* Click was inside popup or on hotspot — ignore */
+        return; /* Click was inside popup or on box-btn — ignore */
       }
       closeAllPopups();
     });
