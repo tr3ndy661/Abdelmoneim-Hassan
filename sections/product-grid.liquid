@@ -200,9 +200,8 @@
                 <div class="product-grid__option-group">
                   <label>Color</label>
                   <div class="product-grid__color-boxes">
-                    <div class="product-grid__color-slider" style="background-color: {{ mock_c1 | downcase }}; transform: translateX(0);"></div>
-                    <div class="product-grid__color-box is-selected" data-value="{{ mock_c1 }}" data-color="{{ mock_c1 | downcase }}">{{ mock_c1 }}</div>
-                    <div class="product-grid__color-box" data-value="{{ mock_c2 }}" data-color="{{ mock_c2 | downcase }}">{{ mock_c2 }}</div>
+                    <div class="product-grid__color-box is-selected" style="--swatch-color: {{ mock_c1 | downcase }};" data-value="{{ mock_c1 }}">{{ mock_c1 }}</div>
+                    <div class="product-grid__color-box" style="--swatch-color: {{ mock_c2 | downcase }};" data-value="{{ mock_c2 }}">{{ mock_c2 }}</div>
                   </div>
                   <!-- Hidden select for js -->
                   <select class="product-grid__option-select" style="display: none;">
@@ -214,28 +213,11 @@
                 <!-- Static Size Option -->
                 <div class="product-grid__option-group">
                   <label>Size</label>
-                  <div class="custom-select">
-                    <button type="button" class="custom-select__trigger" aria-haspopup="listbox" aria-expanded="false">
-                      <span class="custom-select__text">Choose your size</span>
-                      <svg class="custom-select__arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1l5 5 5-5" stroke="black" stroke-width="1.5" fill="none"/>
-                      </svg>
-                    </button>
-                    <div class="custom-select__dropdown" role="listbox">
-                      <div class="custom-select__option" role="option" data-value="XS">XS</div>
-                      <div class="custom-select__option" role="option" data-value="S">S</div>
-                      <div class="custom-select__option" role="option" data-value="M">M</div>
-                      <div class="custom-select__option" role="option" data-value="L">L</div>
-                      <div class="custom-select__option" role="option" data-value="XL">XL</div>
-                    </div>
-                  </div>
-                  <select class="product-grid__option-select" style="display: none;">
-                    <option value="">Choose your size</option>
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
+                  <select class="product-grid__option-select">
+                    <option>Choose your size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
                   </select>
                 </div>
 
