@@ -364,17 +364,9 @@
     section.querySelectorAll('.product-grid__item').forEach(function (item) {
       var blockId = item.getAttribute('data-block-id');
       var hotspotBtn = item.querySelector('.product-grid__hotspot');
-      var boxBtn = item.querySelector('.product-grid__box-btn');
 
       if (hotspotBtn) {
         hotspotBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          togglePopup(blockId);
-        });
-      }
-
-      if (boxBtn) {
-        boxBtn.addEventListener('click', function (e) {
           e.stopPropagation();
           togglePopup(blockId);
         });
@@ -390,12 +382,35 @@
     document.addEventListener('click', function (e) {
       if (
         e.target.closest('.product-grid__popup') ||
-        e.target.closest('.product-grid__hotspot') ||
-        e.target.closest('.product-grid__box-btn')
+        e.target.closest('.product-grid__hotspot')
       ) {
-        return; /* Click was inside popup or on buttons — ignore */
+        return; /* Click was inside popup or on hotspot — ignore */
       }
       closeAllPopups();
+    });
+
+    /* ---- Color Swatch Selection ---- */
+    document.addEventListener('click', function(e) {
+      var colorBox = e.target.closest('.product-grid__color-box');
+      if (colorBox) {
+        var group = colorBox.closest('.product-grid__option-group');
+        if (!group) return;
+
+        // Remove selected class from all boxes in this group
+        group.querySelectorAll('.product-grid__color-box').forEach(function(box) {
+          box.classList.remove('is-selected');
+        });
+
+        // Add to clicked box
+        colorBox.classList.add('is-selected');
+
+        // Update the hidden select element
+        var select = group.querySelector('select.product-grid__option-select');
+        if (select) {
+          select.value = colorBox.getAttribute('data-value');
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
     });
 
     /* ---- Escape key → close all popups ---- */

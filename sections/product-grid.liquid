@@ -121,13 +121,6 @@
           {%- endif -%}
         </div>
 
-        {%- comment -%} ---- Box Action Button ---- {%- endcomment -%}
-        <div class="product-grid__box-btn">
-          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7 1v12M1 7h12" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-
         {%- comment -%} ---- Hotspot & Popup ---- {%- endcomment -%}
           {%- if product != blank -%}
             <button
@@ -174,25 +167,32 @@
 
               <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
                 
-                <!-- Static Color Options -->
-                <div class="product-grid__option-group">
-                  <label>Color</label>
-                  <div class="product-grid__color-boxes">
-                    <div class="product-grid__color-box" style="--swatch-color: #fff;">White</div>
-                    <div class="product-grid__color-box" style="--swatch-color: #000;">Black</div>
+                {%- for option in product.options_with_values -%}
+                  <div class="product-grid__option-group">
+                    <label for="option-{{ block.id }}-{{ option.name | handleize }}">{{ option.name }}</label>
+                    
+                    {%- if option.name == 'Color' or option.name == 'Colour' -%}
+                      <div class="product-grid__color-boxes">
+                        {%- for value in option.values -%}
+                          <div class="product-grid__color-box {% if forloop.first %}is-selected{% endif %}" style="--swatch-color: {{ value | downcase | escape }};" data-value="{{ value | escape }}">
+                            {{ value }}
+                          </div>
+                        {%- endfor -%}
+                      </div>
+                      <select id="option-{{ block.id }}-{{ option.name | handleize }}" class="product-grid__option-select" style="display: none;" data-option-index="{{ forloop.index0 }}">
+                        {%- for value in option.values -%}
+                          <option value="{{ value | escape }}">{{ value }}</option>
+                        {%- endfor -%}
+                      </select>
+                    {%- else -%}
+                      <select id="option-{{ block.id }}-{{ option.name | handleize }}" class="product-grid__option-select" data-option-index="{{ forloop.index0 }}">
+                        {%- for value in option.values -%}
+                          <option value="{{ value | escape }}">{{ value }}</option>
+                        {%- endfor -%}
+                      </select>
+                    {%- endif -%}
                   </div>
-                </div>
-
-                <!-- Static Size Option -->
-                <div class="product-grid__option-group">
-                  <label>Size</label>
-                  <select class="product-grid__option-select">
-                    <option>Choose your size</option>
-                    <option>S</option>
-                    <option>M</option>
-                    <option>L</option>
-                  </select>
-                </div>
+                {%- endfor -%}
 
                 <button type="submit" class="product-grid__add-to-cart">
                   <span>ADD TO CART</span>
