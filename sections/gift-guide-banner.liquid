@@ -96,6 +96,12 @@
   {%- comment -%} ---- Description ---- {%- endcomment -%}
   <div class="gift-banner__description">{{ section.settings.description }}</div>
 
+  {%- comment -%} ---- Bottom Right Camera / Accessories ---- {%- endcomment -%}
+  <img src="{{ section.settings.background_image | default: 'gift-guide-bg-bottom.png' | asset_url }}" alt="" class="gift-banner__illus gift-banner__illus--bottom">
+  
+  {%- comment -%} ---- Mobile-specific Frame Image ---- {%- endcomment -%}
+  <img src="{{ 'Frame.png' | asset_url }}" alt="" class="gift-banner__illus gift-banner__illus--mobile">
+
   {%- comment -%} ---- Black CTA Button ---- {%- endcomment -%}
   <a href="{{ section.settings.cta_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--black">
     <span class="gift-banner__btn-label">{{ section.settings.cta_text }}</span>
@@ -182,7 +188,6 @@
 
   /* Bottom illustration — right-aligned, leaves left side clear for text */
   .gift-banner__illus--bottom {
-    top: 442px;      /* 64 + 378 from Figma */
     left: 550px;
     width: 890px;
     height: 402px;
@@ -586,6 +591,11 @@
     }
 
     .gift-banner__illus--bottom {
+      display: none;
+    }
+
+    .gift-banner__illus--mobile {
+      display: block;
       position: relative;
       top: auto;
       left: auto;
