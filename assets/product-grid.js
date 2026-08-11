@@ -56,6 +56,8 @@
     function closeAllPopups() {
       popups.forEach(function (popup) {
         popup.setAttribute('aria-hidden', 'true');
+        var gridItem = popup.closest('.product-grid__item');
+        if (gridItem) gridItem.style.zIndex = '';
       });
       hotspots.forEach(function (btn) {
         btn.setAttribute('aria-expanded', 'false');
@@ -86,6 +88,7 @@
       /* If this popup was closed, open it now */
       if (!isCurrentlyOpen) {
         popup.setAttribute('aria-hidden', 'false');
+        if (gridItem) gridItem.style.zIndex = '100';
         if (hotspot) hotspot.setAttribute('aria-expanded', 'true');
         if (backdrop) backdrop.classList.add('product-grid__backdrop--visible');
       }

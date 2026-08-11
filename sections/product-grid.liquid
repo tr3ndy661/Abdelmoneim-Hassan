@@ -135,82 +135,87 @@
           role="dialog"
           aria-label="Product details"
         >
-            <div class="product-grid__popup-inner">
-              <button
-                class="product-grid__popup-close"
-                type="button"
-                aria-label="Close product details"
-              >
-                &times;
-              </button>
+          {%- case forloop.index -%}
+            {%- when 1 -%}
+              {%- assign mock_title = "Orange Wide Leg" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 2 -%}
+              {%- assign mock_title = "Tailored Jacket" -%}
+              {%- assign mock_c1 = "Blue" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 3 -%}
+              {%- assign mock_title = "Accordion Pleated Dress" -%}
+              {%- assign mock_c1 = "Red" -%}
+              {%- assign mock_c2 = "Grey" -%}
+            {%- when 4 -%}
+              {%- assign mock_title = "Green Trench Coat" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 5 -%}
+              {%- assign mock_title = "Tennis Blue T-Shirt" -%}
+              {%- assign mock_c1 = "Grey" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- else -%}
+              {%- assign mock_title = "Product Title" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+          {%- endcase -%}
+          {%- assign mock_price = "980,00€" -%}
+          {%- assign mock_desc = "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief." -%}
 
-              <div class="product-grid__popup-header">
-                {%- if custom_image != blank -%}
-                  <img src="{{ custom_image | image_url: width: 240 }}" class="product-grid__popup-image" alt="">
-                {%- elsif product.featured_image != blank -%}
-                  <img src="{{ product.featured_image | image_url: width: 240 }}" class="product-grid__popup-image" alt="">
-                {%- else -%}
-                  {{ 'product-1' | placeholder_svg_tag: 'product-grid__popup-image' }}
-                {%- endif -%}
-                <div class="product-grid__popup-info">
-                  <h3 class="product-grid__popup-title">{{ product.title | default: "Orange Wide Leg" }}</h3>
-                  <p class="product-grid__popup-price">{{ product.price | money_without_trailing_zeros | default: "980,00€" }}</p>
-                  <div class="product-grid__popup-description">
-                    {{ product.description | strip_html | truncatewords: 20 | default: "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief." }}
-                  </div>
+          <div class="product-grid__popup-inner">
+            <button
+              class="product-grid__popup-close"
+              type="button"
+              aria-label="Close product details"
+            >
+              &times;
+            </button>
+
+            <div class="product-grid__popup-header">
+              {%- if custom_image != blank -%}
+                <img src="{{ custom_image | image_url: width: 240 }}" class="product-grid__popup-image" alt="">
+              {%- elsif product.featured_image != blank -%}
+                <img src="{{ product.featured_image | image_url: width: 240 }}" class="product-grid__popup-image" alt="">
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'product-grid__popup-image' }}
+              {%- endif -%}
+              <div class="product-grid__popup-info">
+                <h3 class="product-grid__popup-title">{{ mock_title }}</h3>
+                <p class="product-grid__popup-price">{{ mock_price }}</p>
+                <div class="product-grid__popup-description">
+                  {{ mock_desc }}
                 </div>
               </div>
+            </div>
 
               <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
                 
-                {%- if product == blank or product.options_with_values == blank -%}
-                  <!-- Static Color Options -->
-                  <div class="product-grid__option-group">
-                    <label>Color</label>
-                    <div class="product-grid__color-boxes">
-                      <div class="product-grid__color-box is-selected" style="--swatch-color: #fff;">White</div>
-                      <div class="product-grid__color-box" style="--swatch-color: #000;">Black</div>
-                    </div>
+                <!-- Static Color Options -->
+                <div class="product-grid__option-group">
+                  <label>Color</label>
+                  <div class="product-grid__color-boxes">
+                    <div class="product-grid__color-box is-selected" style="--swatch-color: {{ mock_c1 | downcase }};" data-value="{{ mock_c1 }}">{{ mock_c1 }}</div>
+                    <div class="product-grid__color-box" style="--swatch-color: {{ mock_c2 | downcase }};" data-value="{{ mock_c2 }}">{{ mock_c2 }}</div>
                   </div>
+                  <!-- Hidden select for js -->
+                  <select class="product-grid__option-select" style="display: none;">
+                    <option value="{{ mock_c1 }}">{{ mock_c1 }}</option>
+                    <option value="{{ mock_c2 }}">{{ mock_c2 }}</option>
+                  </select>
+                </div>
 
-                  <!-- Static Size Option -->
-                  <div class="product-grid__option-group">
-                    <label>Size</label>
-                    <select class="product-grid__option-select">
-                      <option>Choose your size</option>
-                      <option>S</option>
-                      <option>M</option>
-                      <option>L</option>
-                    </select>
-                  </div>
-                {%- else -%}
-                  {%- for option in product.options_with_values -%}
-                    <div class="product-grid__option-group">
-                      <label for="option-{{ block.id }}-{{ option.name | handleize }}">{{ option.name }}</label>
-                      
-                      {%- if option.name == 'Color' or option.name == 'Colour' -%}
-                        <div class="product-grid__color-boxes">
-                          {%- for value in option.values -%}
-                            <div class="product-grid__color-box {% if forloop.first %}is-selected{% endif %}" style="--swatch-color: {{ value | downcase | escape }};" data-value="{{ value | escape }}">
-                              {{ value }}
-                            </div>
-                          {%- endfor -%}
-                        </div>
-                        <select id="option-{{ block.id }}-{{ option.name | handleize }}" class="product-grid__option-select" style="display: none;" data-option-index="{{ forloop.index0 }}">
-                          {%- for value in option.values -%}
-                            <option value="{{ value | escape }}">{{ value }}</option>
-                          {%- endfor -%}
-                        </select>
-                      {%- else -%}
-                        <select id="option-{{ block.id }}-{{ option.name | handleize }}" class="product-grid__option-select" data-option-index="{{ forloop.index0 }}">
-                          {%- for value in option.values -%}
-                            <option value="{{ value | escape }}">{{ value }}</option>
-                          {%- endfor -%}
-                        </select>
-                      {%- endif -%}
-                    </div>
-                  {%- endfor -%}
-                {%- endif -%}
+                <!-- Static Size Option -->
+                <div class="product-grid__option-group">
+                  <label>Size</label>
+                  <select class="product-grid__option-select">
+                    <option>Choose your size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                  </select>
+                </div>
 
                 <button type="submit" class="product-grid__add-to-cart">
                   <span>ADD TO CART</span>
