@@ -21,12 +21,9 @@
     <p class="gift-banner__top-subtext">{{ section.settings.top_subtext }}</p>
 
     <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--yellow">
+      <span class="gift-banner__btn-accent" aria-hidden="true"></span>
       <span class="gift-banner__btn-label">{{ section.settings.top_button_text }}</span>
-      <span class="gift-banner__btn-arrow" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
+      <span class="gift-banner__btn-dash" aria-hidden="true"></span>
     </a>
   </div>
 
@@ -35,7 +32,9 @@
     <div class="gift-banner__description">{{ section.settings.description }}</div>
 
     <a href="{{ section.settings.cta_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--black">
-      {{ section.settings.cta_text }}
+      <span class="gift-banner__btn-accent" aria-hidden="true"></span>
+      <span class="gift-banner__btn-label">{{ section.settings.cta_text }}</span>
+      <span class="gift-banner__btn-dash" aria-hidden="true"></span>
     </a>
   </div>
 
@@ -105,49 +104,91 @@
     text-align: center;
   }
 
-  /* --- Buttons --- */
+  /* --- Buttons (shared base) ---
+     Both buttons share the same internal structure from Figma:
+       1. Left accent line (Rectangle 26036 — thin vertical border)
+       2. Centered text label ("choose yours" / "choose gift")
+       3. Right-side horizontal dash (Line 15 — acts as a minimal arrow indicator)
+     Hover animation (300ms ease-out): dash slides right, label shifts left.
+  */
   .gift-banner__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     text-decoration: none;
     font-family: 'Jost', sans-serif;
-    font-weight: 500;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    text-transform: uppercase;
     border-radius: 0;
-    transition: background-color 300ms ease-out, color 300ms ease-out;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 
+  /* --- Left accent line (Rectangle 26036) ---
+     Figma: left:0%, right:99.52% → ~0.48% wide = ~1px.
+     A thin vertical accent on the left edge of the button. */
+  .gift-banner__btn-accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: currentColor;
+    opacity: 0.3;
+  }
+
+  /* --- Button label ---
+     Figma: centered text, shifts left on hover (Smart Animate). */
+  .gift-banner__btn-label {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    transition: transform 300ms ease-out;
+  }
+
+  /* --- Right-side horizontal dash (Line 15) ---
+     Figma: left:77.78%, right:10.63%, vertically centered.
+     This is a decorative dash that acts as a minimal arrow indicator.
+     On hover it slides further right. */
+  .gift-banner__btn-dash {
+    position: absolute;
+    left: 77.78%;
+    right: 10.63%;
+    top: 50%;
+    height: 1.5px;
+    background: currentColor;
+    transform: translateY(-50%);
+    transition: transform 300ms ease-out;
+  }
+
+  /* --- Hover animation (both buttons) ---
+     Mirrors Figma "Change to Variant 2 / Smart Animate 300ms ease-out":
+     dash slides right, label shifts left. */
+  .gift-banner__btn:hover .gift-banner__btn-dash {
+    transform: translateY(-50%) translateX(4px);
+  }
+
+  .gift-banner__btn:hover .gift-banner__btn-label {
+    transform: translateX(-4px);
+  }
+
+  /* --- Yellow button (top bar CTA) --- */
   .gift-banner__btn--yellow {
     width: 207px;
     height: 44px;
     background-color: #FFF544;
     color: #000;
     font-size: 15px;
-    position: relative;
-    overflow: hidden;
   }
 
-  .gift-banner__btn-arrow {
-    display: inline-flex;
-    transform: translateX(0);
-    transition: transform 300ms ease-out;
-  }
-
-  /* Hover state — mirrors the Figma "Change to Variant 2 / Smart Animate 300ms" interaction:
-     arrow slides right and label shifts left, simulating the variant swap. */
-  .gift-banner__btn--yellow:hover .gift-banner__btn-arrow {
-    transform: translateX(4px);
-  }
-
-  .gift-banner__btn--yellow:hover .gift-banner__btn-label {
-    transform: translateX(-2px);
-  }
-
-  .gift-banner__btn-label {
-    transition: transform 300ms ease-out;
-  }
-
+  /* --- Black button ("Shop now" / "choose yours") ---
+     Figma: 220×50px, positioned at left:67px, top:743px. */
   .gift-banner__btn--black {
     position: absolute;
     top: 743px;
@@ -158,10 +199,6 @@
     color: #fff;
     font-size: 16px;
     z-index: 2;
-  }
-
-  .gift-banner__btn--black:hover {
-    background-color: #222;
   }
 
   /* --- Main hero content --- */
@@ -225,7 +262,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .gift-banner__ticker-track { animation: none; }
-    .gift-banner__btn-arrow,
+    .gift-banner__btn-dash,
     .gift-banner__btn-label { transition: none; }
   }
 
