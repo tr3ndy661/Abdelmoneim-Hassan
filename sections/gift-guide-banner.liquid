@@ -77,15 +77,17 @@
 
   <!-- Mobile Pushdown Menu -->
   <div id="gift-banner-mobile-menu-{{ section.id }}" class="gift-banner__mobile-menu">
-    <p class="gift-banner__mobile-subtext">{{ section.settings.top_subtext_mobile | default: section.settings.top_subtext }}</p>
-    <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn gift-banner__top-btn--mobile">
-      <span class="gift-banner__top-btn-label">{{ section.settings.top_button_text }}</span>
-      <span class="gift-banner__top-btn-icon" aria-hidden="true">
-        <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14 1L19 6M19 6L14 11M19 6H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-    </a>
+    <div class="gift-banner__mobile-menu-inner">
+      <p class="gift-banner__mobile-subtext">{{ section.settings.top_subtext_mobile | default: section.settings.top_subtext }}</p>
+      <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn gift-banner__top-btn--mobile">
+        <span class="gift-banner__top-btn-label">{{ section.settings.top_button_text }}</span>
+        <span class="gift-banner__top-btn-icon" aria-hidden="true">
+          <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 1L19 6M19 6L14 11M19 6H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </div>
   </div>
 
   {%- comment -%} ---- Heading ---- {%- endcomment -%}
@@ -577,6 +579,13 @@
       visibility: visible;
     }
 
+    .gift-banner__mobile-menu-inner {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: stretch;
+      margin: 0 auto;
+    }
+
     .gift-banner__mobile-subtext {
       font-family: 'Jost', sans-serif;
       font-weight: 400;
@@ -587,8 +596,8 @@
     }
 
     .gift-banner__top-btn--mobile {
-      width: 193px;
-      margin: 0 auto;
+      width: 100%;
+      margin: 0;
     }
 
     /* Stack illustrations vertically, scale to fit */
