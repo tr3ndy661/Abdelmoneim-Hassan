@@ -173,25 +173,32 @@
               </div>
 
               <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
-                {%- for option in product.options_with_values -%}
-                  <div class="product-grid__option-group">
-                    <label for="option-{{ block.id }}-{{ option.name | handleize }}">
-                      {{ option.name }}
-                    </label>
-                    <select
-                      id="option-{{ block.id }}-{{ option.name | handleize }}"
-                      class="product-grid__option-select"
-                      data-option-index="{{ forloop.index0 }}"
-                    >
-                      {%- for value in option.values -%}
-                        <option value="{{ value | escape }}">{{ value }}</option>
-                      {%- endfor -%}
-                    </select>
+                
+                <!-- Static Color Options -->
+                <div class="product-grid__option-group">
+                  <label>Color</label>
+                  <div class="product-grid__color-boxes">
+                    <div class="product-grid__color-box" style="--swatch-color: #fff;">White</div>
+                    <div class="product-grid__color-box" style="--swatch-color: #000;">Black</div>
                   </div>
-                {%- endfor -%}
+                </div>
+
+                <!-- Static Size Option -->
+                <div class="product-grid__option-group">
+                  <label>Size</label>
+                  <select class="product-grid__option-select">
+                    <option>Choose your size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                  </select>
+                </div>
 
                 <button type="submit" class="product-grid__add-to-cart">
-                  Add to Cart
+                  <span>ADD TO CART</span>
+                  <svg width="34" height="12" viewBox="0 0 34 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 16px;">
+                    <path d="M0 6H33M33 6L28 1M33 6L28 11" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </button>
               </form>
 
