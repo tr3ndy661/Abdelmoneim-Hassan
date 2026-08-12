@@ -198,10 +198,11 @@
                 
                 {%- unless product.has_only_default_variant -%}
                   {%- for option in product.options_with_values -%}
+                    {%- assign option_name_downcase = option.name | downcase -%}
                     <div class="product-grid__option-group">
                       <label>{{ option.name }}</label>
                       
-                      {%- if forloop.index == 1 -%}
+                      {%- if option_name_downcase == 'color' or option_name_downcase == 'colour' -%}
                         <div class="product-grid__color-boxes">
                           <div class="product-grid__color-slider" style="width: {{ 100.0 | divided_by: option.values.size }}%;"></div>
                           {%- for value in option.values -%}
@@ -215,10 +216,10 @@
                           {%- endfor -%}
                         </select>
                         
-                      {%- elsif forloop.index == 2 -%}
+                      {%- else -%}
                         <div class="product-grid__custom-select">
                           <button type="button" class="product-grid__select-trigger">
-                            <span class="product-grid__select-text">Choose your size</span>
+                            <span class="product-grid__select-text">Choose your {{ option.name | downcase }}</span>
                             <div class="product-grid__select-arrow-wrap">
                               <svg class="product-grid__select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1 1l5 5 5-5" stroke="black" stroke-width="1.5" fill="none"/>
@@ -232,15 +233,7 @@
                           </div>
                         </div>
                         <select class="product-grid__option-select" style="display: none;">
-                          <option value="">Choose your size</option>
-                          {%- for value in option.values -%}
-                            <option value="{{ value | escape }}">{{ value }}</option>
-                          {%- endfor -%}
-                        </select>
-                        
-                      {%- else -%}
-                        <select class="product-grid__option-select" style="width:100%; height:40.44px; padding:0 13px; font-family:'Jost', sans-serif; font-size:16px; border:0.5px solid black; background-color:#fff;">
-                          <option value="">Choose {{ option.name | downcase }}</option>
+                          <option value="">Choose your {{ option.name | downcase }}</option>
                           {%- for value in option.values -%}
                             <option value="{{ value | escape }}">{{ value }}</option>
                           {%- endfor -%}
