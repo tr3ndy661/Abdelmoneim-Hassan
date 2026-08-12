@@ -403,28 +403,87 @@
       closeAllPopups();
     });
 
-    /* ---- Color Swatch Selection ---- */
+    /* ---- Color Swatch Selection (sliding bar) ---- */
     document.addEventListener('click', function (e) {
       var colorBox = e.target.closest('.product-grid__color-box');
       if (colorBox) {
+        e.stopPropagation();
+        var container = colorBox.closest('.product-grid__color-boxes');
+        if (!container) return;
         var group = colorBox.closest('.product-grid__option-group');
-        if (!group) return;
 
-        // Remove selected class from all boxes in this group
-        group.querySelectorAll('.product-grid__color-box').forEach(function (box) {
+        // Remove selected class from all boxes
+        container.querySelectorAll('.product-grid__color-box').forEach(function (box) {
           box.classList.remove('is-selected');
         });
 
         // Add to clicked box
         colorBox.classList.add('is-selected');
 
+        // Animate the slider to the clicked box position & update its color
+        var slider = container.querySelector('.product-grid__color-slider');
+        if (slider) {
+          slider.style.left = colorBox.offsetLeft + 'px';
+          slider.style.backgroundColor = colorBox.getAttribute('data-color');
+        }
+
         // Update the hidden select element
-        var select = group.querySelector('select.product-grid__option-select');
-        if (select) {
-          select.value = colorBox.getAttribute('data-value');
-          select.dispatchEvent(new Event('change', { bubbles: true }));
+        if (group) {
+          var select = group.querySelector('select.product-grid__option-select');
+          if (select) {
+            select.value = colorBox.getAttribute('data-value');
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          }
         }
       }
+    });
+
+    /* ---- Custom Size Dropdown ---- */
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('.product-grid__select-trigger');
+      if (trigger) {
+        e.stopPropagation();
+        var dropdown = trigger.closest('.product-grid__custom-select');
+
+        // Close all OTHER open dropdowns first
+        document.querySelectorAll('.product-grid__custom-select.is-open').forEach(function (d) {
+          if (d !== dropdown) d.classList.remove('is-open');
+        });
+
+        // Toggle this one
+        dropdown.classList.toggle('is-open');
+        return;
+      }
+
+      var option = e.target.closest('.product-grid__select-option');
+      if (option) {
+        e.stopPropagation();
+        var dropdown = option.closest('.product-grid__custom-select');
+        var textEl = dropdown.querySelector('.product-grid__select-text');
+        var value = option.getAttribute('data-value');
+
+        // Update visible text
+        if (textEl) textEl.textContent = option.textContent;
+
+        // Update hidden select
+        var group = dropdown.closest('.product-grid__option-group');
+        if (group) {
+          var hiddenSelect = group.querySelector('select.product-grid__option-select');
+          if (hiddenSelect) {
+            hiddenSelect.value = value;
+            hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+
+        // Close dropdown
+        dropdown.classList.remove('is-open');
+        return;
+      }
+
+      // Close all dropdowns when clicking outside
+      document.querySelectorAll('.product-grid__custom-select.is-open').forEach(function (d) {
+        d.classList.remove('is-open');
+      });
     });
 
     /* ---- Escape key → close all popups ---- */

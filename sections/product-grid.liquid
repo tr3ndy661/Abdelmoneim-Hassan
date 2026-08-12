@@ -200,8 +200,9 @@
                 <div class="product-grid__option-group">
                   <label>Color</label>
                   <div class="product-grid__color-boxes">
-                    <div class="product-grid__color-box is-selected" style="--swatch-color: {{ mock_c1 | downcase }};" data-value="{{ mock_c1 }}">{{ mock_c1 }}</div>
-                    <div class="product-grid__color-box" style="--swatch-color: {{ mock_c2 | downcase }};" data-value="{{ mock_c2 }}">{{ mock_c2 }}</div>
+                    <div class="product-grid__color-slider" style="background-color: {{ mock_c1 | downcase }};"></div>
+                    <div class="product-grid__color-box is-selected" data-value="{{ mock_c1 }}" data-color="{{ mock_c1 | downcase }}">{{ mock_c1 }}</div>
+                    <div class="product-grid__color-box" data-value="{{ mock_c2 }}" data-color="{{ mock_c2 | downcase }}">{{ mock_c2 }}</div>
                   </div>
                   <!-- Hidden select for js -->
                   <select class="product-grid__option-select" style="display: none;">
@@ -213,11 +214,28 @@
                 <!-- Static Size Option -->
                 <div class="product-grid__option-group">
                   <label>Size</label>
-                  <select class="product-grid__option-select">
-                    <option>Choose your size</option>
-                    <option>S</option>
-                    <option>M</option>
-                    <option>L</option>
+                  <div class="product-grid__custom-select">
+                    <button type="button" class="product-grid__select-trigger">
+                      <span class="product-grid__select-text">Choose your size</span>
+                      <svg class="product-grid__select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1l5 5 5-5" stroke="black" stroke-width="1.5" fill="none"/>
+                      </svg>
+                    </button>
+                    <div class="product-grid__select-dropdown">
+                      <div class="product-grid__select-option" data-value="XS">XS</div>
+                      <div class="product-grid__select-option" data-value="S">S</div>
+                      <div class="product-grid__select-option" data-value="M">M</div>
+                      <div class="product-grid__select-option" data-value="L">L</div>
+                      <div class="product-grid__select-option" data-value="XL">XL</div>
+                    </div>
+                  </div>
+                  <select class="product-grid__option-select" style="display: none;">
+                    <option value="">Choose your size</option>
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
                   </select>
                 </div>
 
