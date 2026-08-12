@@ -376,10 +376,7 @@
   display: block;
 }
 
-/* When second option is selected, slide right */
-.product-grid__color-slider.slide-right {
-  transform: translateX(100%);
-}
+
 
 .product-grid__color-box {
   position: relative;
