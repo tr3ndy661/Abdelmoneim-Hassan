@@ -409,6 +409,9 @@
   bottom: 0;
   width: 6px;
   background-color: var(--swatch-color, transparent);
+  background-image: var(--swatch-image, none);
+  background-size: cover;
+  background-position: center;
   z-index: 3;
 }
 
