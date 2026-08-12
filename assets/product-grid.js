@@ -420,9 +420,14 @@
         // Add to clicked box
         colorBox.classList.add('is-selected');
 
-        // Slide the black fill: if second option clicked, add slide-right; otherwise remove it
+        // Activate and slide the black fill
         var slider = container.querySelector('.product-grid__color-slider');
         if (slider) {
+          // Show the slider on first click
+          if (!slider.classList.contains('is-active')) {
+            slider.classList.add('is-active');
+          }
+
           var index = colorBox.getAttribute('data-index');
           if (index === '1') {
             slider.classList.add('slide-right');

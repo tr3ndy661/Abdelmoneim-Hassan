@@ -201,7 +201,7 @@
                   <label>Color</label>
                   <div class="product-grid__color-boxes">
                     <div class="product-grid__color-slider"></div>
-                    <div class="product-grid__color-box is-selected" style="--swatch-color: {{ mock_c1 | downcase }};" data-value="{{ mock_c1 }}" data-index="0">{{ mock_c1 }}</div>
+                    <div class="product-grid__color-box" style="--swatch-color: {{ mock_c1 | downcase }};" data-value="{{ mock_c1 }}" data-index="0">{{ mock_c1 }}</div>
                     <div class="product-grid__color-box" style="--swatch-color: {{ mock_c2 | downcase }};" data-value="{{ mock_c2 }}" data-index="1">{{ mock_c2 }}</div>
                   </div>
                   <!-- Hidden select for js -->
@@ -217,9 +217,11 @@
                   <div class="product-grid__custom-select">
                     <button type="button" class="product-grid__select-trigger">
                       <span class="product-grid__select-text">Choose your size</span>
-                      <svg class="product-grid__select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1l5 5 5-5" stroke="black" stroke-width="1.5" fill="none"/>
-                      </svg>
+                      <div class="product-grid__select-arrow-wrap">
+                        <svg class="product-grid__select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 1l5 5 5-5" stroke="black" stroke-width="1.5" fill="none"/>
+                        </svg>
+                      </div>
                     </button>
                     <div class="product-grid__select-dropdown">
                       <div class="product-grid__select-option" data-value="XS">XS</div>
