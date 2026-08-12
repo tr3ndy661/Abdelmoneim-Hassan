@@ -84,7 +84,7 @@
      */
     function togglePopup(blockId) {
       var popup = section.querySelector('[data-popup-id="' + blockId + '"]') ||
-                  document.querySelector('[data-popup-id="' + blockId + '"]');
+        document.querySelector('[data-popup-id="' + blockId + '"]');
       if (!popup) return;
 
       var gridItem = popup.closest('.product-grid__item');
@@ -419,6 +419,7 @@
 
         // Add to clicked box
         colorBox.classList.add('is-selected');
+
         // Activate and slide the black fill
         var slider = container.querySelector('.product-grid__color-slider');
         if (slider) {
@@ -427,8 +428,12 @@
             slider.classList.add('is-active');
           }
 
-          var index = parseInt(colorBox.getAttribute('data-index'), 10) || 0;
-          slider.style.transform = 'translateX(' + (index * 100) + '%)';
+          var index = colorBox.getAttribute('data-index');
+          if (index === '1') {
+            slider.classList.add('slide-right');
+          } else {
+            slider.classList.remove('slide-right');
+          }
         }
 
         // Update the hidden select element

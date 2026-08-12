@@ -369,14 +369,18 @@
   z-index: 1;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
-  display: none; /* Hidden until user first clicks a color */
+  display: none;
+  /* Hidden until user first clicks a color */
 }
 
 .product-grid__color-slider.is-active {
   display: block;
 }
 
-
+/* When second option is selected, slide right */
+.product-grid__color-slider.slide-right {
+  transform: translateX(100%);
+}
 
 .product-grid__color-box {
   position: relative;
