@@ -135,7 +135,38 @@
           role="dialog"
           aria-label="Product details"
         >
-          {%- comment -%} Removed static mock assignments {%- endcomment -%}
+          {%- case forloop.index -%}
+            {%- when 1 -%}
+              {%- assign mock_title = "Orange Wide Leg" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 2 -%}
+              {%- assign mock_title = "Tailored Jacket" -%}
+              {%- assign mock_c1 = "Blue" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 3 -%}
+              {%- assign mock_title = "Accordion Pleated Dress" -%}
+              {%- assign mock_c1 = "Red" -%}
+              {%- assign mock_c2 = "Grey" -%}
+            {%- when 4 -%}
+              {%- assign mock_title = "Green Trench Coat" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 5 -%}
+              {%- assign mock_title = "Tennis Blue T-Shirt" -%}
+              {%- assign mock_c1 = "Grey" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 6 -%}
+              {%- assign mock_title = "Long Sleeve Tennis Top" -%}
+              {%- assign mock_c1 = "Blue" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- else -%}
+              {%- assign mock_title = "Product Title" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+          {%- endcase -%}
+          {%- assign mock_price = "980,00€" -%}
+          {%- assign mock_desc = "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief." -%}
 
           <div class="product-grid__popup-inner">
             <button
@@ -155,70 +186,60 @@
                 {{ 'product-1' | placeholder_svg_tag: 'product-grid__popup-image' }}
               {%- endif -%}
               <div class="product-grid__popup-info">
-                <h3 class="product-grid__popup-title">{{ product.title | default: "Product Title" }}</h3>
-                <p class="product-grid__popup-price">{{ product.price | money | default: "980,00€" }}</p>
+                <h3 class="product-grid__popup-title">{{ mock_title }}</h3>
+                <p class="product-grid__popup-price">{{ mock_price }}</p>
                 <div class="product-grid__popup-description">
-                  {{ product.description | strip_html | truncatewords: 20 | default: "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief." }}
+                  {{ mock_desc }}
                 </div>
               </div>
             </div>
 
               <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
                 
-                {%- unless product.has_only_default_variant -%}
-                  {%- for option in product.options_with_values -%}
-                    {%- assign option_name_downcase = option.name | downcase -%}
-                    <div class="product-grid__option-group">
-                      <label>{{ option.name }}</label>
-                      
-                      {%- if option_name_downcase == 'color' or option_name_downcase == 'colour' -%}
-                        <div class="product-grid__color-boxes">
-                          <div class="product-grid__color-slider" style="width: {{ 100.0 | divided_by: option.values.size }}%;"></div>
-                          {%- for value in option.values -%}
-                            <div class="product-grid__color-box" style="--swatch-color: {{ value | downcase | replace: ' ', '' }};" data-value="{{ value | escape }}" data-index="{{ forloop.index0 }}">{{ value }}</div>
-                          {%- endfor -%}
-                        </div>
-                        <select class="product-grid__option-select" style="display: none;">
-                          <option value="">Choose {{ option.name | downcase }}</option>
-                          {%- for value in option.values -%}
-                            <option value="{{ value | escape }}">{{ value }}</option>
-                          {%- endfor -%}
-                        </select>
-                        
-                      {%- elsif option_name_downcase == 'size' -%}
-                        <div class="product-grid__custom-select">
-                          <button type="button" class="product-grid__select-trigger">
-                            <span class="product-grid__select-text">Choose your size</span>
-                            <div class="product-grid__select-arrow-wrap">
-                              <svg class="product-grid__select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1 1l5 5 5-5" stroke="black" stroke-width="1.5" fill="none"/>
-                              </svg>
-                            </div>
-                          </button>
-                          <div class="product-grid__select-dropdown">
-                            {%- for value in option.values -%}
-                              <div class="product-grid__select-option" data-value="{{ value | escape }}">{{ value }}</div>
-                            {%- endfor -%}
-                          </div>
-                        </div>
-                        <select class="product-grid__option-select" style="display: none;">
-                          <option value="">Choose your size</option>
-                          {%- for value in option.values -%}
-                            <option value="{{ value | escape }}">{{ value }}</option>
-                          {%- endfor -%}
-                        </select>
-                        
-                      {%- else -%}
-                        <select class="product-grid__option-select" style="width:100%; height:40.44px; padding:0 13px; font-family:'Jost', sans-serif; font-size:16px; border:0.5px solid black; background-color:#fff;">
-                          <option value="">Choose {{ option.name | downcase }}</option>
-                          {%- for value in option.values -%}
-                            <option value="{{ value | escape }}">{{ value }}</option>
-                          {%- endfor -%}
-                        </select>
-                      {%- endif -%}
+                <!-- Static Color Options -->
+                <div class="product-grid__option-group">
+                  <label>Color</label>
+                  <div class="product-grid__color-boxes">
+                    <div class="product-grid__color-slider"></div>
+                    <div class="product-grid__color-box" style="--swatch-color: {{ mock_c1 | downcase }};" data-value="{{ mock_c1 }}" data-index="0">{{ mock_c1 }}</div>
+                    <div class="product-grid__color-box" style="--swatch-color: {{ mock_c2 | downcase }};" data-value="{{ mock_c2 }}" data-index="1">{{ mock_c2 }}</div>
+                  </div>
+                  <!-- Hidden select for js -->
+                  <select class="product-grid__option-select" style="display: none;">
+                    <option value="{{ mock_c1 }}">{{ mock_c1 }}</option>
+                    <option value="{{ mock_c2 }}">{{ mock_c2 }}</option>
+                  </select>
+                </div>
+
+                <!-- Static Size Option -->
+                <div class="product-grid__option-group">
+                  <label>Size</label>
+                  <div class="product-grid__custom-select">
+                    <button type="button" class="product-grid__select-trigger">
+                      <span class="product-grid__select-text">Choose your size</span>
+                      <div class="product-grid__select-arrow-wrap">
+                        <svg class="product-grid__select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 1l5 5 5-5" stroke="black" stroke-width="1.5" fill="none"/>
+                        </svg>
+                      </div>
+                    </button>
+                    <div class="product-grid__select-dropdown">
+                      <div class="product-grid__select-option" data-value="XS">XS</div>
+                      <div class="product-grid__select-option" data-value="S">S</div>
+                      <div class="product-grid__select-option" data-value="M">M</div>
+                      <div class="product-grid__select-option" data-value="L">L</div>
+                      <div class="product-grid__select-option" data-value="XL">XL</div>
                     </div>
-                  {%- endfor -%}
-                {%- endunless -%}
+                  </div>
+                  <select class="product-grid__option-select" style="display: none;">
+                    <option value="">Choose your size</option>
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                  </select>
+                </div>
 
                 <button type="submit" class="product-grid__add-to-cart">
                   <span>ADD TO CART</span>
