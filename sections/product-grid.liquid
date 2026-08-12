@@ -168,6 +168,7 @@
           {%- assign mock_price = "980,00€" -%}
           {%- assign mock_desc = "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief." -%}
 
+          {% comment %}
           <div class="product-grid__popup-inner">
             <button
               class="product-grid__popup-close"
@@ -253,6 +254,37 @@
                 {{ product.variants | json }}
               </script>
             </div>
+          {% endcomment %}
+
+          <!-- MOCK POPUP FOR TESTING -->
+          <div class="product-grid__popup-inner" style="background: white; padding: 20px; border: 1px solid #ccc; max-width: 300px;">
+            <button class="product-grid__popup-close" type="button" aria-label="Close" style="float: right;">X</button>
+            <h3 style="margin-top:0;">{{ product.title }}</h3>
+            <p>{{ product.price | money }}</p>
+
+            <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
+              {%- unless product.has_only_default_variant -%}
+                {%- for option in product.options_with_values -%}
+                  <label style="display: block; margin-top: 10px;">{{ option.name }}</label>
+                  <select class="product-grid__option-select" style="display: block; width: 100%; padding: 8px; margin-top: 5px;">
+                    <option value="">Choose {{ option.name }}</option>
+                    {%- for value in option.values -%}
+                      <option value="{{ value | escape }}">{{ value }}</option>
+                    {%- endfor -%}
+                  </select>
+                {%- endfor -%}
+              {%- endunless -%}
+
+              <button type="submit" class="product-grid__add-to-cart" style="display: block; width: 100%; padding: 12px; background: black; color: white; margin-top: 20px; border: none; cursor: pointer;">
+                <span>ADD TO CART (MOCK)</span>
+              </button>
+            </form>
+
+            <script type="application/json" data-variants>
+              {{ product.variants | json }}
+            </script>
+          </div>
+          <!-- END MOCK POPUP -->
           </div>
       </div>
     {%- endfor -%}
