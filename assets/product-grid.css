@@ -390,14 +390,10 @@
   padding-left: 15px;
   font-family: 'Jost', sans-serif;
   font-size: 18px;
-  color: #000;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  z-index: 2;
-}
-
-.product-grid__color-box.is-selected {
   color: #fff;
+  mix-blend-mode: difference;
+  cursor: pointer;
+  z-index: 2;
 }
 
 .product-grid__color-box:first-of-type {
