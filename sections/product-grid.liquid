@@ -200,9 +200,9 @@
                 <div class="product-grid__option-group">
                   <label>Color</label>
                   <div class="product-grid__color-boxes">
-                    <div class="product-grid__color-slider" style="background-color: {{ mock_c1 | downcase }};"></div>
-                    <div class="product-grid__color-box is-selected" data-value="{{ mock_c1 }}" data-color="{{ mock_c1 | downcase }}">{{ mock_c1 }}</div>
-                    <div class="product-grid__color-box" data-value="{{ mock_c2 }}" data-color="{{ mock_c2 | downcase }}">{{ mock_c2 }}</div>
+                    <div class="product-grid__color-slider"></div>
+                    <div class="product-grid__color-box is-selected" style="--swatch-color: {{ mock_c1 | downcase }};" data-value="{{ mock_c1 }}" data-index="0">{{ mock_c1 }}</div>
+                    <div class="product-grid__color-box" style="--swatch-color: {{ mock_c2 | downcase }};" data-value="{{ mock_c2 }}" data-index="1">{{ mock_c2 }}</div>
                   </div>
                   <!-- Hidden select for js -->
                   <select class="product-grid__option-select" style="display: none;">

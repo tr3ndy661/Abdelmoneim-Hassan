@@ -356,19 +356,24 @@
   border: 0.5px solid black;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
 }
 
-/* Animated slider bar */
+/* Black sliding selection indicator — covers one half at a time */
 .product-grid__color-slider {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 6px;
-  z-index: 2;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+  width: 50%;
+  background-color: #000;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
+}
+
+/* When second option is selected, slide right */
+.product-grid__color-slider.slide-right {
+  transform: translateX(100%);
 }
 
 .product-grid__color-box {
@@ -381,16 +386,29 @@
   font-size: 18px;
   color: #000;
   cursor: pointer;
-  transition: font-weight 0.2s ease;
-  z-index: 1;
+  transition: color 0.3s ease;
+  z-index: 2;
 }
 
 .product-grid__color-box.is-selected {
+  color: #fff;
   font-weight: 600;
 }
 
 .product-grid__color-box:first-of-type {
   border-right: 0.5px solid black;
+}
+
+/* Static colored bar on each option's left edge */
+.product-grid__color-box::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background-color: var(--swatch-color, transparent);
+  z-index: 3;
 }
 
 /* ============================================================

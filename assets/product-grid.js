@@ -403,7 +403,7 @@
       closeAllPopups();
     });
 
-    /* ---- Color Swatch Selection (sliding bar) ---- */
+    /* ---- Color Swatch Selection (sliding black fill) ---- */
     document.addEventListener('click', function (e) {
       var colorBox = e.target.closest('.product-grid__color-box');
       if (colorBox) {
@@ -420,11 +420,15 @@
         // Add to clicked box
         colorBox.classList.add('is-selected');
 
-        // Animate the slider to the clicked box position & update its color
+        // Slide the black fill: if second option clicked, add slide-right; otherwise remove it
         var slider = container.querySelector('.product-grid__color-slider');
         if (slider) {
-          slider.style.left = colorBox.offsetLeft + 'px';
-          slider.style.backgroundColor = colorBox.getAttribute('data-color');
+          var index = colorBox.getAttribute('data-index');
+          if (index === '1') {
+            slider.classList.add('slide-right');
+          } else {
+            slider.classList.remove('slide-right');
+          }
         }
 
         // Update the hidden select element
