@@ -205,7 +205,8 @@
                         <label>{{ option.name }}</label>
                         <div class="product-grid__color-boxes">
                           <div class="product-grid__color-slider" style="width: {{ 100.0 | divided_by: option.values.size }}%;"></div>
-                          {%- for value in option.values -%}
+                          {%- assign reversed_colors = option.values | reverse -%}
+                          {%- for value in reversed_colors -%}
                             <div class="product-grid__color-box" style="--swatch-color: {{ value | downcase | replace: ' ', '' }};" data-value="{{ value | escape }}" data-index="{{ forloop.index0 }}">{{ value }}</div>
                           {%- endfor -%}
                         </div>
