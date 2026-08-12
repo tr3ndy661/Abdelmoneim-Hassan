@@ -211,12 +211,10 @@
      */
     async function addToCart(variantId, popupEl) {
       var addButton = popupEl.querySelector('.product-grid__add-to-cart');
-      var addText = addButton ? addButton.querySelector('span') : null;
-      var originalText = addText ? addText.textContent : 'ADD TO CART';
 
       /* Disable button to prevent duplicate submissions */
-      if (addButton) addButton.disabled = true;
-      if (addText) addText.textContent = 'ADDING...';
+      addButton.disabled = true;
+      addButton.textContent = 'Adding…';
       clearFeedback(popupEl);
 
       try {
@@ -284,14 +282,6 @@
            * item count and update the badge.
            */
           updateCartCount();
-          
-          /* Automatically open the theme's cart drawer (or fallback to redirect) */
-          var cartDrawer = document.querySelector('theme-drawer#cart-drawer');
-          if (cartDrawer && typeof cartDrawer.open === 'function') {
-            cartDrawer.open();
-          } else {
-            window.location.href = '/cart';
-          }
         } else {
           /* Surface the first error to the user */
           var failedResponse = responses.find(function (r) {
@@ -308,8 +298,8 @@
         console.error('[Product Grid] Add to cart failed:', error);
         showFeedback(popupEl, 'Something went wrong. Please try again.', 'error');
       } finally {
-        if (addButton) addButton.disabled = false;
-        if (addText) addText.textContent = originalText;
+        addButton.disabled = false;
+        addButton.textContent = 'Add to Cart';
       }
     }
 
@@ -510,11 +500,11 @@
       if (e.key === 'Escape') closeAllPopups();
     });
 
-    /* ---- Form submission → Add to Cart (Delegated) ---- */
-    document.addEventListener('submit', function (e) {
-      if (e.target && e.target.matches('.product-grid__popup-form')) {
+    /* ---- Form submission → Add to Cart ---- */
+    section.querySelectorAll('.product-grid__popup-form').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
         e.preventDefault();
-        var form = e.target;
+
         var popupEl = form.closest('.product-grid__popup');
         var variant = resolveSelectedVariant(popupEl);
 
@@ -529,7 +519,7 @@
         }
 
         addToCart(variant.id, popupEl);
-      }
+      });
     });
   }
 })();
