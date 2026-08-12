@@ -197,12 +197,12 @@
             <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
                 
                 {%- unless product.has_only_default_variant -%}
+                  {%- comment -%} First pass: Render ONLY the Color option so it's always on top {%- endcomment -%}
                   {%- for option in product.options_with_values -%}
                     {%- assign option_name_downcase = option.name | downcase -%}
-                    <div class="product-grid__option-group">
-                      <label>{{ option.name }}</label>
-                      
-                      {%- if option_name_downcase == 'color' or option_name_downcase == 'colour' -%}
+                    {%- if option_name_downcase == 'color' or option_name_downcase == 'colour' -%}
+                      <div class="product-grid__option-group">
+                        <label>{{ option.name }}</label>
                         <div class="product-grid__color-boxes">
                           <div class="product-grid__color-slider" style="width: {{ 100.0 | divided_by: option.values.size }}%;"></div>
                           {%- for value in option.values -%}
@@ -215,8 +215,16 @@
                             <option value="{{ value | escape }}">{{ value }}</option>
                           {%- endfor -%}
                         </select>
-                        
-                      {%- else -%}
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  {%- comment -%} Second pass: Render ALL OTHER options below Color {%- endcomment -%}
+                  {%- for option in product.options_with_values -%}
+                    {%- assign option_name_downcase = option.name | downcase -%}
+                    {%- if option_name_downcase != 'color' and option_name_downcase != 'colour' -%}
+                      <div class="product-grid__option-group">
+                        <label>{{ option.name }}</label>
                         <div class="product-grid__custom-select">
                           <button type="button" class="product-grid__select-trigger">
                             <span class="product-grid__select-text">Choose your {{ option.name | downcase }}</span>
@@ -238,13 +246,16 @@
                             <option value="{{ value | escape }}">{{ value }}</option>
                           {%- endfor -%}
                         </select>
-                      {%- endif -%}
-                    </div>
+                      </div>
+                    {%- endif -%}
                   {%- endfor -%}
                 {%- endunless -%}
 
                 <button type="submit" class="product-grid__add-to-cart">
                   <span>ADD TO CART</span>
+                  <svg width="34" height="12" viewBox="0 0 34 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 16px;">
+                    <path d="M0 6H33M33 6L28 1M33 6L28 11" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
                 </button>
               </form>
 
