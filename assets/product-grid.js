@@ -428,12 +428,8 @@
             slider.classList.add('is-active');
           }
 
-          var index = colorBox.getAttribute('data-index');
-          if (index === '1') {
-            slider.classList.add('slide-right');
-          } else {
-            slider.classList.remove('slide-right');
-          }
+          var index = parseInt(colorBox.getAttribute('data-index'), 10) || 0;
+          slider.style.transform = 'translateX(' + (index * 100) + '%)';
         }
 
         // Update the hidden select element
