@@ -390,9 +390,15 @@
   padding-left: 15px;
   font-family: 'Jost', sans-serif;
   font-size: 18px;
+  color: #000;
+  cursor: pointer;
+  z-index: auto;
+}
+
+.product-grid__color-text {
   color: #fff;
   mix-blend-mode: difference;
-  cursor: pointer;
+  position: relative;
   z-index: 2;
 }
 
@@ -412,7 +418,7 @@
   background-image: var(--swatch-image, none);
   background-size: cover;
   background-position: center;
-  z-index: 3;
+  z-index: 2;
 }
 
 /* ============================================================

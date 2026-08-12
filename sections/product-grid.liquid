@@ -210,7 +210,9 @@
                             {%- if value.swatch.color -%}
                               {%- assign custom_color = value.swatch.color -%}
                             {%- endif -%}
-                            <div class="product-grid__color-box" style="--swatch-color: {{ custom_color }}; {% if value.swatch.image %}--swatch-image: url('{{ value.swatch.image | image_url: width: 50 }}');{% endif %}" data-value="{{ value | escape }}" data-index="{{ forloop.index0 }}">{{ value }}</div>
+                            <div class="product-grid__color-box" style="--swatch-color: {{ custom_color }}; {% if value.swatch.image %}--swatch-image: url('{{ value.swatch.image | image_url: width: 50 }}');{% endif %}" data-value="{{ value | escape }}" data-index="{{ forloop.index0 }}">
+                              <span class="product-grid__color-text">{{ value }}</span>
+                            </div>
                           {%- endfor -%}
                         </div>
                         <select class="product-grid__option-select" style="display: none;" data-option-index="{{ forloop.index }}">
