@@ -210,7 +210,7 @@
                             <div class="product-grid__color-box" style="--swatch-color: {{ value | downcase | replace: ' ', '' }};" data-value="{{ value | escape }}" data-index="{{ forloop.index0 }}">{{ value }}</div>
                           {%- endfor -%}
                         </div>
-                        <select class="product-grid__option-select" style="display: none;">
+                        <select class="product-grid__option-select" style="display: none;" data-option-index="{{ forloop.index }}">
                           <option value="">Choose {{ option.name | downcase }}</option>
                           {%- for value in option.values -%}
                             <option value="{{ value | escape }}">{{ value }}</option>
@@ -241,7 +241,7 @@
                             {%- endfor -%}
                           </div>
                         </div>
-                        <select class="product-grid__option-select" style="display: none;">
+                        <select class="product-grid__option-select" style="display: none;" data-option-index="{{ forloop.index }}">
                           <option value="">Choose your {{ option.name | downcase }}</option>
                           {%- for value in option.values -%}
                             <option value="{{ value | escape }}">{{ value }}</option>

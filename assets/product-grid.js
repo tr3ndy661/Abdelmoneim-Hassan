@@ -133,15 +133,12 @@
       }
 
       var selects = popupEl.querySelectorAll('.product-grid__option-select');
-      var selectedOptions = [];
-      selects.forEach(function (select) {
-        selectedOptions.push(select.value);
-      });
 
       /* Find the variant where every option matches the selections */
       var matched = variants.find(function (variant) {
-        return selectedOptions.every(function (value, index) {
-          return variant['option' + (index + 1)] === value;
+        return Array.from(selects).every(function (select) {
+          var optionIndex = select.getAttribute('data-option-index');
+          return variant['option' + optionIndex] === select.value;
         });
       });
 
