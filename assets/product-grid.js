@@ -54,10 +54,19 @@
      * buttons to their collapsed state. Also hides the mobile backdrop.
      */
     function closeAllPopups() {
+      /* Move any popups that were appended to body back to their grid items */
+      var bodyPopups = document.querySelectorAll('body > .product-grid__popup');
+      bodyPopups.forEach(function (popup) {
+        var blockId = popup.getAttribute('data-popup-id');
+        var gridItem = section.querySelector('[data-block-id="' + blockId + '"]');
+        if (gridItem) {
+          gridItem.appendChild(popup);
+        }
+        popup.setAttribute('aria-hidden', 'true');
+      });
+
       popups.forEach(function (popup) {
         popup.setAttribute('aria-hidden', 'true');
-        var gridItem = popup.closest('.product-grid__item');
-        if (gridItem) gridItem.style.zIndex = '';
       });
       hotspots.forEach(function (btn) {
         btn.setAttribute('aria-expanded', 'false');
@@ -74,7 +83,8 @@
      * @param {string} blockId — The Shopify block ID (data-block-id)
      */
     function togglePopup(blockId) {
-      var popup = section.querySelector('[data-popup-id="' + blockId + '"]');
+      var popup = section.querySelector('[data-popup-id="' + blockId + '"]') ||
+                  document.querySelector('[data-popup-id="' + blockId + '"]');
       if (!popup) return;
 
       var gridItem = popup.closest('.product-grid__item');
@@ -87,8 +97,9 @@
 
       /* If this popup was closed, open it now */
       if (!isCurrentlyOpen) {
+        /* Move popup to document.body to escape any CSS stacking context */
+        document.body.appendChild(popup);
         popup.setAttribute('aria-hidden', 'false');
-        if (gridItem) gridItem.style.zIndex = '9999';
         if (hotspot) hotspot.setAttribute('aria-expanded', 'true');
         if (backdrop) backdrop.classList.add('product-grid__backdrop--visible');
       }
