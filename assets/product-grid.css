@@ -569,6 +569,17 @@
 @media screen and (max-width: 768px) {
   .product-grid-section {
     padding: 0 16.72px;
+    margin-top: 0;
+  }
+
+  .product-grid__header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .product-grid__heading {
+    font-size: 24px;
+    line-height: 29px;
   }
 
   .product-grid {
