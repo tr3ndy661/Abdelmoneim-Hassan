@@ -115,13 +115,12 @@
     </span>
   </a>
 
-  {%- comment -%} ---- Bottom Scrolling Ticker ---- {%- endcomment -%}
-  {% if section.settings.ticker_text != blank %}
+  {%- comment -%} ---- Bottom Ticker ---- {%- endcomment -%}
+  {% if section.settings.ticker_text != blank or section.settings.ticker_text_desktop != blank %}
     <div class="gift-banner__ticker" aria-hidden="true">
       <div class="gift-banner__ticker-track">
-        {% for i in (1..6) %}
-          <span class="gift-banner__ticker-item">{{ section.settings.ticker_text }}</span>
-        {% endfor %}
+        <span class="gift-banner__ticker-item gift-banner__ticker-item--desktop">{{ section.settings.ticker_text_desktop | default: section.settings.ticker_text }}</span>
+        <span class="gift-banner__ticker-item gift-banner__ticker-item--mobile">{{ section.settings.ticker_text }}</span>
       </div>
     </div>
   {% endif %}
@@ -494,7 +493,7 @@
     padding: 0;
   }
 
-  .gift-banner__ticker-item:not(:first-child) {
+  .gift-banner__ticker-item--mobile {
     display: none;
   }
 
@@ -716,8 +715,12 @@
       text-align: center;
     }
 
-    .gift-banner__ticker-item:not(:first-child) {
-      display: none;
+    .gift-banner__ticker-item--desktop {
+      display: none !important;
+    }
+    
+    .gift-banner__ticker-item--mobile {
+      display: inline-block !important;
     }
   }
 </style>
@@ -811,8 +814,14 @@
     {
       "type": "text",
       "id": "ticker_text",
-      "label": "Ticker text",
+      "label": "Ticker text (Mobile)",
       "default": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
+    },
+    {
+      "type": "text",
+      "id": "ticker_text_desktop",
+      "label": "Ticker text (Desktop)",
+      "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
     }
   ],
   "presets": [
