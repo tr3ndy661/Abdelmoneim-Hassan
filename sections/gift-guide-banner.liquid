@@ -239,12 +239,11 @@
   }
 
   /* Hide mobile menu on desktop */
-  .gift-banner__mobile-menu {
-    display: none;
-  }
-
-  .gift-banner__mobile-toggle {
-    display: none;
+  @media screen and (min-width: 750px) {
+    .gift-banner__mobile-menu,
+    .gift-banner__mobile-toggle {
+      display: none !important;
+    }
   }
 
   .gift-banner__logo {

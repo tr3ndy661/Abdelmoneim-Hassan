@@ -23,9 +23,9 @@
  * ============================================================ */
 .product-grid-section {
   width: 100%;
-  max-width: 1337px;
+  max-width: 1440px;
   margin: 90px auto 0;
-  padding: 0;
+  padding: 0 51.5px 51px;
   background-color: #fff;
   box-sizing: border-box;
 }
