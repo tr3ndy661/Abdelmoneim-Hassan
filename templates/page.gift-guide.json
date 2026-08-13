@@ -19,10 +19,12 @@
         "top_button_text": "Choose gift",
         "top_button_link": "",
         "heading": "The Gift Guide",
-        "description": "<p>Discover Joy: Your Ultimate Holiday Gift Destination.</p>",
+        "description": "<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>",
+        "description_mobile": "<p>Discover Joy: Your Ultimate Holiday Gift Destination.</p>",
         "cta_text": "Shop now",
         "cta_link": "",
-        "ticker_text": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
+        "ticker_text": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR",
+        "ticker_text_desktop": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
       }
     },
     "product_grid": {

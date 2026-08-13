@@ -103,7 +103,10 @@
   <h1 class="gift-banner__heading">{{ section.settings.heading }}</h1>
 
   {%- comment -%} ---- Description ---- {%- endcomment -%}
-  <div class="gift-banner__description">{{ section.settings.description }}</div>
+  <div class="gift-banner__description">
+    <div class="gift-banner__desktop-only">{{ section.settings.description }}</div>
+    <div class="gift-banner__mobile-only">{{ section.settings.description_mobile | default: section.settings.description }}</div>
+  </div>
 
   {%- comment -%} ---- Black CTA Button ---- {%- endcomment -%}
   <a href="{{ section.settings.cta_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--black">
@@ -148,6 +151,10 @@
     overflow: hidden;
     font-family: 'Jost', sans-serif;
     background-color: #ffffff;
+  }
+
+  .gift-banner__mobile-only {
+    display: none;
   }
 
   /* ============================================================
@@ -517,6 +524,10 @@
       display: none !important;
     }
 
+    .gift-banner__mobile-only {
+      display: block !important;
+    }
+
     .gift-banner {
       height: auto;
       padding-bottom: 0;
@@ -793,7 +804,13 @@
     {
       "type": "richtext",
       "id": "description",
-      "label": "Description",
+      "label": "Description (Desktop)",
+      "default": "<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "description_mobile",
+      "label": "Description (Mobile)",
       "default": "<p>Discover Joy: Your Ultimate Holiday Gift Destination.</p>"
     },
     {
