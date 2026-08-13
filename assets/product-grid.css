@@ -180,6 +180,13 @@
     left: 49.08%;
     right: auto;
   }
+
+  /* Image 6: top 164px, left 319.5px */
+  .product-grid__item:nth-child(6) .product-grid__box-btn {
+    top: 36.94%;
+    left: 73.79%;
+    right: auto;
+  }
 }
 
 /* ============================================================
