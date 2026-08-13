@@ -419,6 +419,7 @@
   background-image: var(--swatch-image, none);
   background-size: cover;
   background-position: center;
+  border-right: 0.5px solid black;
   z-index: 2;
 }
 
