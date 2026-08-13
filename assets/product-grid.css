@@ -127,11 +127,6 @@
   justify-content: center;
   cursor: pointer;
   z-index: 5;
-  transition: transform 0.2s ease;
-}
-
-.product-grid__box-btn:hover {
-  transform: scale(1.1);
 }
 
 .product-grid__box-btn svg {
