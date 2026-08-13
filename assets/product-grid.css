@@ -139,6 +139,49 @@
   height: 8px;
 }
 
+@media screen and (min-width: 769px) {
+  .product-grid__box-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+  }
+
+  /* Image 1: top 238px, left 256.5px out of 433x444 */
+  .product-grid__item:nth-child(1) .product-grid__box-btn {
+    top: 53.60%;
+    left: 59.23%;
+    right: auto;
+  }
+
+  /* Image 2: top 222px, left 355.5px */
+  .product-grid__item:nth-child(2) .product-grid__box-btn {
+    top: 50.00%;
+    left: 82.10%;
+    right: auto;
+  }
+
+  /* Image 3: top 82px, left 261px */
+  .product-grid__item:nth-child(3) .product-grid__box-btn {
+    top: 18.46%;
+    left: 60.27%;
+    right: auto;
+  }
+
+  /* Image 4: top 71px, left 301.5px */
+  .product-grid__item:nth-child(4) .product-grid__box-btn {
+    top: 15.99%;
+    left: 69.63%;
+    right: auto;
+  }
+
+  /* Image 5: top 104px, left 212.5px */
+  .product-grid__item:nth-child(5) .product-grid__box-btn {
+    top: 23.42%;
+    left: 49.08%;
+    right: auto;
+  }
+}
+
 /* ============================================================
  * Hotspot "+" Button
  * ============================================================
