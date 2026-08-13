@@ -1,0 +1,852 @@
+{% comment %}
+  Gift Guide Banner Section
+  =========================
+  Built entirely from scratch — no Dawn components/snippets.
+
+  Layout (from Figma CSS export):
+    Section:  1440 × 878px (64px top bar + 780px content area + 34px ticker)
+    Top bar:  TISSO VISON (left) | subtext (center) | yellow CTA (right)
+    Content:  Two illustration images tiled asymmetrically:
+              - Frame.png:    1440×390, top-left (full width, top half)
+              - Frame(1).png: 890×402, at left:550 top:378 (bottom-RIGHT only)
+              This leaves the bottom-left quadrant as clean white space
+              for the heading, description, and black CTA button.
+    Ticker:   Black bar at the absolute bottom, scrolling text.
+
+  All positions use the Figma export values with a +64px vertical offset
+  to account for the top bar area (confirmed by button position: 679+64=743).
+{% endcomment %}
+
+<section class="gift-banner" style="background-color: {{ section.settings.background_color }};">
+
+  {%- comment -%} ---- Background Illustrations ----
+    Two images compose the background. They are NOT full-bleed —
+    Frame(1).png is offset right (left:550px) to deliberately leave
+    the bottom-left clear for the text content overlay.
+  {%- endcomment -%}
+  {% if section.settings.background_image != blank %}
+    {%- comment -%} Custom image override from customizer {%- endcomment -%}
+    <img
+      src="{{ section.settings.background_image | image_url: width: 1440 }}"
+      alt="{{ section.settings.heading | escape }}"
+      class="gift-banner__illus gift-banner__illus--custom"
+      loading="eager"
+    >
+  {% else %}
+    <img
+      src="{{ 'gift-guide-bg-top.png' | asset_url }}"
+      alt=""
+      aria-hidden="true"
+      class="gift-banner__illus gift-banner__illus--top"
+      loading="eager"
+    >
+    <img
+      src="{{ 'gift-guide-bg-bottom.png' | asset_url }}"
+      alt=""
+      aria-hidden="true"
+      class="gift-banner__illus gift-banner__illus--bottom"
+      loading="eager"
+    >
+  {% endif %}
+
+  {%- comment -%} ---- Mobile-specific Frame Image ---- {%- endcomment -%}
+  <img
+    src="{{ 'Frame.png' | asset_url }}"
+    alt=""
+    aria-hidden="true"
+    class="gift-banner__illus gift-banner__illus--mobile"
+    loading="eager"
+  >
+
+  {%- comment -%} ---- Top Utility Bar ---- {%- endcomment -%}
+  <div class="gift-banner__top">
+    <!-- Mobile Toggle (Hamburger/Close) -->
+    <button type="button" class="gift-banner__mobile-toggle" aria-expanded="false" aria-label="Toggle menu" onclick="document.getElementById('gift-banner-mobile-menu-{{ section.id }}').classList.toggle('is-open'); this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');">
+      <span class="gift-banner__mobile-icon-menu">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <span class="gift-banner__mobile-icon-close">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+    </button>
+
+    <p class="gift-banner__logo">{{ section.settings.logo_text }}</p>
+
+    <!-- Desktop Subtext & CTA -->
+    <p class="gift-banner__top-subtext gift-banner__desktop-only">{{ section.settings.top_subtext }}</p>
+    <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn gift-banner__desktop-only">
+      <span class="gift-banner__top-btn-label">{{ section.settings.top_button_text }}</span>
+      <span class="gift-banner__top-btn-icon" aria-hidden="true">
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 1L19 6M19 6L14 11M19 6H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+  </div>
+
+  <!-- Mobile Pushdown Menu -->
+  <div id="gift-banner-mobile-menu-{{ section.id }}" class="gift-banner__mobile-menu">
+    <div class="gift-banner__mobile-menu-inner">
+      <p class="gift-banner__mobile-subtext">{{ section.settings.top_subtext_mobile | default: section.settings.top_subtext }}</p>
+      <a href="{{ section.settings.top_button_link | default: '#' }}" class="gift-banner__top-btn gift-banner__top-btn--mobile">
+        <span class="gift-banner__top-btn-label">{{ section.settings.top_button_text }}</span>
+        <span class="gift-banner__top-btn-icon" aria-hidden="true">
+          <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 1L19 6M19 6L14 11M19 6H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} ---- Heading ---- {%- endcomment -%}
+  <h1 class="gift-banner__heading">{{ section.settings.heading }}</h1>
+
+  {%- comment -%} ---- Description ---- {%- endcomment -%}
+  <div class="gift-banner__description">
+    <div class="gift-banner__desktop-only">{{ section.settings.description }}</div>
+    <div class="gift-banner__mobile-only">{{ section.settings.description_mobile | default: section.settings.description }}</div>
+  </div>
+
+  {%- comment -%} ---- Black CTA Button ---- {%- endcomment -%}
+  <a href="{{ section.settings.cta_link | default: '#' }}" class="gift-banner__btn gift-banner__btn--black">
+    <span class="gift-banner__btn-label">{{ section.settings.cta_text }}</span>
+    <span class="gift-banner__btn-icon" aria-hidden="true">
+      <svg width="24" height="14" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 1L19 6M19 6L14 11M19 6H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </a>
+
+  {%- comment -%} ---- Bottom Ticker ---- {%- endcomment -%}
+  {% if section.settings.ticker_text != blank or section.settings.ticker_text_desktop != blank %}
+    <div class="gift-banner__ticker" aria-hidden="true">
+      <div class="gift-banner__ticker-track">
+        <span class="gift-banner__ticker-item gift-banner__ticker-item--desktop">{{ section.settings.ticker_text_desktop | default: section.settings.ticker_text }}</span>
+        <span class="gift-banner__ticker-item gift-banner__ticker-item--mobile">{{ section.settings.ticker_text }}</span>
+      </div>
+    </div>
+  {% endif %}
+</section>
+
+<style>
+  /* ============================================================
+   * Gift Guide Banner — Layout & Styles
+   * ============================================================
+   * All pixel values come directly from the Figma CSS export.
+   * The 64px offset (for text positions) accounts for the top
+   * utility bar height: .box position + 64 = section position.
+   *
+   * Coordinate reference: section top-left corner = (0, 0).
+   * ============================================================ */
+
+  @import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap');
+
+  .gift-banner {
+    position: relative;
+    width: 100%;
+    max-width: 1440px;
+    height: 878px;
+    margin: 0 auto;
+    overflow: hidden;
+    font-family: 'Jost', sans-serif;
+    background-color: #ffffff;
+  }
+
+  .gift-banner__mobile-only {
+    display: none;
+  }
+
+  /* ============================================================
+   * Background Illustrations
+   * ============================================================
+   * Two images compose the decorative background:
+   *
+   * Frame.png (top): Covers full width at the top of the section.
+   *   Figma: .frame { top:0, left:0, w:1440, h:390 }
+   *   Section: top:64 (below top bar)
+   *
+   * Frame(1).png (bottom-right): Intentionally NOT full-width.
+   *   Figma: .img { top:378, left:550, w:890, h:402 }
+   *   Section: top:442 (64+378), left:550
+   *   This asymmetric placement leaves the bottom-left quadrant
+   *   as clean white space for the text/CTA overlay.
+   * ============================================================ */
+  .gift-banner__illus {
+    position: absolute;
+    z-index: 0;
+    display: block;
+  }
+
+  .gift-banner__illus--custom {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Top illustration — full width, top portion */
+  .gift-banner__illus--top {
+    top: 64px;
+    left: 0;
+    width: 1440px;
+    height: 390px;
+    object-fit: cover;
+  }
+
+  /* Bottom illustration — right-aligned, leaves left side clear for text */
+  .gift-banner__illus--bottom {
+    top: 442px;      /* 64 + 378 from Figma */
+    left: 550px;
+    width: 890px;
+    height: 402px;
+    object-fit: cover;
+  }
+
+  .gift-banner__illus--mobile {
+    display: none;
+  }
+
+  /* ============================================================
+   * Global Overrides for this Page
+   * ============================================================
+   * Hide the default theme header and footer since this landing
+   * page is meant to be standalone with just the banner + grid.
+   * ============================================================ */
+  #shopify-section-header,
+  #shopify-section-footer,
+  #shopify-section-announcement-bar,
+  #header-group,
+  .header-wrapper,
+  .footer-wrapper {
+    display: none !important;
+  }
+
+  /* ============================================================
+   * Top Utility Bar
+   * ============================================================
+   * Grid layout ensures the subtext is perfectly centered
+   * regardless of the logo/button widths.
+   * ============================================================ */
+  .gift-banner__top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 10px 50px;
+    height: auto;
+    box-sizing: border-box;
+    background-color: #F5F5F5;
+  }
+
+  /* Hide mobile menu on desktop */
+  @media screen and (min-width: 750px) {
+    .gift-banner__mobile-menu,
+    .gift-banner__mobile-toggle {
+      display: none !important;
+    }
+  }
+
+  .gift-banner__logo {
+    justify-self: start;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .gift-banner__top-subtext {
+    justify-self: center;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 140%;
+    color: #000;
+    margin: 0;
+    text-align: center;
+  }
+
+  /* ---- Yellow CTA (top bar — "CHOOSE GIFT") ---- */
+  .gift-banner__top-btn {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 207px;
+    height: 44px;
+    background-color: #FFF544;
+    color: #000;
+    text-decoration: none;
+    font-family: 'Jost', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20.5px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    z-index: 1; /* establish stacking context */
+    transition: color 400ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 400ms ease-out;
+  }
+
+  .gift-banner__top-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    transform: translateX(-101%);
+    transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+  }
+
+  .gift-banner__top-btn:hover::before,
+  .gift-banner__top-btn:active::before {
+    transform: translateX(0);
+  }
+
+  .gift-banner__top-btn:hover,
+  .gift-banner__top-btn:active {
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .gift-banner__top-btn-label {
+    position: relative;
+  }
+
+  .gift-banner__top-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    z-index: 1;
+  }
+
+  /* ============================================================
+   * Heading — "The Gift Guide"
+   * ============================================================
+   * Figma: .text-wrapper
+   *   top: 54.49% of 780 = 425px → section: 489px (425+64)
+   *   left: 4.64% of 1440 = 67px
+   *   font: Jost Medium 70px, line-height: 70px, color: #000
+   * ============================================================ */
+  .gift-banner__heading {
+    position: absolute;
+    top: 489px;
+    left: 67px;
+    z-index: 2;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    font-size: 70px;
+    line-height: 70px;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  /* ============================================================
+   * Description
+   * ============================================================
+   * Figma: .p
+   *   top: 545px → section: 609px (545+64)
+   *   left: calc(50% - 655px) ≈ 65px in 1440px → using 67px for alignment
+   *   width: 483px, font: Jost Regular 20px, line-height: 28px
+   * ============================================================ */
+  .gift-banner__description {
+    position: absolute;
+    top: 609px;
+    left: 67px;
+    z-index: 2;
+    width: 483px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0;
+  }
+
+  .gift-banner__description p {
+    margin: 0;
+  }
+
+  /* ============================================================
+   * Buttons — Shared Structure
+   * ============================================================
+   * Both buttons use the same Figma structure:
+   *   - Centered uppercase label
+   *   - Right-side horizontal dash (Line 15 from Figma)
+   * Hover: dash slides right, label shifts left (300ms ease-out)
+   * ============================================================ */
+  .gift-banner__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-decoration: none;
+    font-family: 'Jost', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20.5px;
+    text-transform: uppercase;
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 2; /* establish stacking context for animation */
+    transition: color 400ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 400ms ease-out;
+  }
+
+  /* Button label */
+  .gift-banner__btn-label {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Arrow icon */
+  .gift-banner__btn-icon {
+    display: inline-flex;
+    align-items: center;
+    z-index: 1;
+  }
+
+  /* ---- Black CTA ("SHOP NOW") ----
+     Figma: .component { top:679, left:67, w:220, h:50 }
+     Section: top: 743px (679+64) */
+  .gift-banner__btn--black {
+    position: absolute;
+    top: 743px;
+    left: 67px;
+    width: 220px;
+    height: 50px;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 16px;
+    z-index: 2; /* Keep above description text */
+  }
+
+  .gift-banner__btn--black::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFF544;
+    transform: translateX(-101%);
+    transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+  }
+
+  .gift-banner__btn--black:hover::before,
+  .gift-banner__btn--black:active::before {
+    transform: translateX(0);
+  }
+
+  .gift-banner__btn--black:hover,
+  .gift-banner__btn--black:active {
+    color: #000000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* ============================================================
+   * Bottom Ticker
+   * ============================================================
+   * Black bar at the absolute bottom of the section.
+   * Text scrolls left infinitely via CSS animation.
+   * ============================================================ */
+  .gift-banner__ticker {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #F5F5F5;
+    overflow: hidden;
+    z-index: 3;
+    padding: 10px 50px;
+    box-sizing: border-box;
+  }
+
+  .gift-banner__ticker-track {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .gift-banner__ticker-item {
+    color: #000;
+    font-family: 'Jost', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0;
+  }
+
+  .gift-banner__ticker-item--mobile {
+    display: none;
+  }
+
+  @keyframes gift-ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Accessibility: respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .gift-banner__ticker-track { animation: none; }
+    .gift-banner__btn-dash,
+    .gift-banner__btn-label { transition: none; }
+  }
+
+  /* ============================================================
+   * Mobile Responsive (≤749px)
+   * ============================================================ */
+  @media screen and (max-width: 749px) {
+    .gift-banner__desktop-only {
+      display: none !important;
+    }
+
+    .gift-banner__mobile-only {
+      display: block !important;
+    }
+
+    .gift-banner {
+      height: auto;
+      padding-bottom: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar layout on mobile */
+    .gift-banner__top {
+      position: relative;
+      height: 64px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      order: 1;
+      background-color: #FFFFFF;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .gift-banner__mobile-toggle {
+      display: block;
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      color: #000;
+      z-index: 10;
+    }
+
+    .gift-banner__mobile-toggle[aria-expanded="true"] .gift-banner__mobile-icon-menu { display: none; }
+    .gift-banner__mobile-toggle[aria-expanded="false"] .gift-banner__mobile-icon-menu { display: block; }
+    
+    .gift-banner__mobile-toggle[aria-expanded="true"] .gift-banner__mobile-icon-close { display: block; }
+    .gift-banner__mobile-toggle[aria-expanded="false"] .gift-banner__mobile-icon-close { display: none; }
+
+    .gift-banner__logo {
+      margin: 0;
+    }
+
+    /* Mobile Pushdown Menu */
+    .gift-banner__mobile-menu {
+      background-color: #f4f4f4;
+      text-align: center;
+      order: 2;
+      overflow: hidden;
+      max-height: 0;
+      padding: 0 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: max-height 400ms cubic-bezier(0.4, 0, 0.2, 1), padding 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), visibility 400ms;
+    }
+
+    .gift-banner__mobile-menu.is-open {
+      max-height: 250px;
+      padding: 32px 24px;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .gift-banner__mobile-menu-inner {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: stretch;
+      margin: 0 auto;
+    }
+
+    .gift-banner__mobile-subtext {
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 140%;
+      color: #000;
+      margin: 0 0 20px 0;
+    }
+
+    .gift-banner__top-btn--mobile {
+      width: 100%;
+      margin: 0;
+    }
+
+    /* Stack illustrations vertically, scale to fit */
+    .gift-banner__illus--top {
+      display: none; /* Hide top frame on mobile */
+    }
+
+    .gift-banner__illus--bottom {
+      display: none;
+    }
+
+    .gift-banner__illus--mobile {
+      display: block;
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      width: 100%;
+      height: auto;
+      order: 5;
+      margin-top: 24px;
+      margin-bottom: 0;
+    }
+
+    .gift-banner__illus--custom {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 100%;
+      height: 300px;
+      order: 5;
+      margin-top: 24px;
+      margin-bottom: 0;
+    }
+
+    /* Text content: switch to static flow */
+    .gift-banner__heading {
+      position: relative;
+      top: auto;
+      left: auto;
+      padding: 32px 16px 0;
+      font-size: 32px;
+      line-height: 1.2;
+      white-space: normal;
+      text-align: center;
+      order: 3;
+    }
+
+    .gift-banner__description {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 100%;
+      padding: 16px 16px 0;
+      font-size: 15px;
+      line-height: 1.5;
+      text-align: center;
+      order: 4;
+    }
+
+    .gift-banner__btn--black {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: 193px;
+      margin: -90px auto 20px auto; /* overlaps image exactly */
+      order: 6;
+      align-self: center;
+      z-index: 5;
+    }
+
+    .gift-banner__btn--black .gift-banner__btn-icon {
+      position: relative;
+      right: auto;
+      margin-left: 20px;
+    }
+
+    /* Disable hover slide animation on mobile */
+    .gift-banner__btn--black::before {
+      display: none;
+    }
+    .gift-banner__btn--black:hover,
+    .gift-banner__btn--black:active {
+      color: #ffffff;
+      box-shadow: none;
+    }
+
+    /* Ticker on mobile: static gray banner */
+    .gift-banner__ticker {
+      position: relative;
+      bottom: auto;
+      left: auto;
+      background-color: #f4f4f4;
+      padding: 16px 20px;
+      order: 7;
+      z-index: 1;
+      margin-bottom: 40px; /* gap under the ticker on mobile */
+    }
+
+    .gift-banner__ticker-track {
+      animation: none;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .gift-banner__ticker-item {
+      color: #000;
+      font-size: 12px;
+      white-space: normal;
+      padding: 0;
+      text-align: center;
+    }
+
+    .gift-banner__ticker-item--desktop {
+      display: none !important;
+    }
+    
+    .gift-banner__ticker-item--mobile {
+      display: inline-block !important;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Gift Guide Banner",
+  "tag": "section",
+  "class": "section-gift-banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Custom background image",
+      "info": "Optional — overrides the default line-art illustrations. Use 1440×878px."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Top bar"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "Tisso Vison"
+    },
+    {
+      "type": "text",
+      "id": "top_subtext",
+      "label": "Top subtext",
+      "default": "Find the ideal gift for your loved ones."
+    },
+    {
+      "type": "text",
+      "id": "top_subtext_mobile",
+      "label": "Top subtext (Mobile)",
+      "default": "Get started with your \"Mi Solo\" kit"
+    },
+    {
+      "type": "text",
+      "id": "top_button_text",
+      "label": "Top button label",
+      "default": "Choose gift"
+    },
+    {
+      "type": "url",
+      "id": "top_button_link",
+      "label": "Top button link"
+    },
+    {
+      "type": "header",
+      "content": "Main content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description (Desktop)",
+      "default": "<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "description_mobile",
+      "label": "Description (Mobile)",
+      "default": "<p>Discover Joy: Your Ultimate Holiday Gift Destination.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Bottom button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Bottom button link"
+    },
+    {
+      "type": "header",
+      "content": "Ticker"
+    },
+    {
+      "type": "text",
+      "id": "ticker_text",
+      "label": "Ticker text (Mobile)",
+      "default": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
+    },
+    {
+      "type": "text",
+      "id": "ticker_text_desktop",
+      "label": "Ticker text (Desktop)",
+      "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift Guide Banner"
+    }
+  ]
+}
+{% endschema %}

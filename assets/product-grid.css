@@ -1,0 +1,659 @@
+/* ============================================================
+ * Product Grid Section — Styles
+ * ============================================================
+ * Custom 3×2 grid for displaying product lifestyle images with
+ * interactive hotspot "+" buttons. Clicking a hotspot opens a
+ * compact product-detail popup with variant selection and
+ * Add to Cart.
+ *
+ * Built entirely from scratch — no Dawn sections/components.
+ *
+ * Figma specs:
+ *   Container: 1337px max-width, centered
+ *   Grid: 3 columns × 2 rows, 30px gap
+ *   Image cells: ~433×444px (≈ square aspect ratio)
+ *   Mobile: 2 columns at ≤768px
+ * ============================================================ */
+
+/* ---- Google Font: Jost & Lustria ---- */
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Lustria&display=swap');
+
+/* ============================================================
+ * Section Container
+ * ============================================================ */
+.product-grid-section {
+  width: 100%;
+  max-width: 1440px;
+  margin: 90px auto 0;
+  padding: 0 51.5px 51px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+ * Header / Title
+ * ============================================================ */
+.product-grid__header {
+  text-align: left;
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+.product-grid__heading {
+  font-family: 'Lustria', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: #000;
+  margin: 0;
+  letter-spacing: 0.02em;
+  line-height: 43.2px;
+}
+
+/* ============================================================
+ * Grid Layout
+ * 3 equal columns with 30px gap between items.
+ * Grid items don't clip overflow so the popup can extend beyond
+ * the image bounds without being cut off.
+ * ============================================================ */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================================
+ * Individual Grid Item
+ * position:relative anchors both the hotspot button and the
+ * popup card within this element's coordinate space.
+ * ============================================================ */
+.product-grid__item {
+  position: relative;
+}
+
+/* ============================================================
+ * Image Wrapper
+ * Uses aspect-ratio to maintain the Figma proportions (433×444)
+ * regardless of the actual image dimensions. overflow:hidden
+ * crops images that don't match the target ratio.
+ * ============================================================ */
+.product-grid__image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 433 / 444;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  /* Neutral fallback while image loads */
+  border-radius: 0;
+}
+
+.product-grid__image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- Placeholder state when no product is assigned ---- */
+.product-grid__image-wrapper--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+}
+
+.product-grid__placeholder-svg {
+  width: 50%;
+  height: auto;
+  fill: #ccc;
+}
+
+/* ============================================================
+ * Box Button (Plus Icon)
+ * ============================================================ */
+.product-grid__box-btn {
+  position: absolute;
+  top: 18px;
+  right: 52px;
+  width: 16px;
+  height: 16px;
+  background-color: #f8f8f8e6;
+  border-radius: 7.86px;
+  box-shadow: 0px 3px 4px #00000033;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.product-grid__box-btn svg {
+  width: 8px;
+  height: 8px;
+}
+
+@media screen and (min-width: 769px) {
+  .product-grid__box-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+  }
+
+  /* Image 1: top 238px, left 256.5px out of 433x444 */
+  .product-grid__item:nth-child(1) .product-grid__box-btn {
+    top: 53.60%;
+    left: 59.23%;
+    right: auto;
+  }
+
+  /* Image 2: top 222px, left 355.5px */
+  .product-grid__item:nth-child(2) .product-grid__box-btn {
+    top: 50.00%;
+    left: 82.10%;
+    right: auto;
+  }
+
+  /* Image 3: top 82px, left 261px */
+  .product-grid__item:nth-child(3) .product-grid__box-btn {
+    top: 18.46%;
+    left: 60.27%;
+    right: auto;
+  }
+
+  /* Image 4: top 71px, left 301.5px */
+  .product-grid__item:nth-child(4) .product-grid__box-btn {
+    top: 15.99%;
+    left: 69.63%;
+    right: auto;
+  }
+
+  /* Image 5: top 104px, left 212.5px */
+  .product-grid__item:nth-child(5) .product-grid__box-btn {
+    top: 23.42%;
+    left: 49.08%;
+    right: auto;
+  }
+
+  /* Image 6: top 164px, left 319.5px */
+  .product-grid__item:nth-child(6) .product-grid__box-btn {
+    top: 36.94%;
+    left: 73.79%;
+    right: auto;
+  }
+}
+
+/* ============================================================
+ * Hotspot "+" Button
+ * ============================================================
+ * Positioned absolutely within the image wrapper. Each block's
+ * x/y position is set via CSS custom properties (--hotspot-x,
+ * --hotspot-y) which the merchant controls from the customizer.
+ *
+ * Design: white circle with a "+" icon — matches the Figma comp.
+ * The "+" rotates 45° to become "×" when the popup is open,
+ * providing a visual cue that clicking again will close it.
+ * ============================================================ */
+.product-grid__hotspot {
+  position: absolute;
+  left: var(--hotspot-x, 70%);
+  top: var(--hotspot-y, 20%);
+  transform: translate(-50%, -50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+.product-grid__hotspot:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Active/open state: invert colors and rotate "+" → "×" */
+.product-grid__hotspot[aria-expanded="true"] {
+  background-color: #000;
+}
+
+.product-grid__hotspot[aria-expanded="true"] .product-grid__hotspot-icon {
+  color: #fff;
+  transform: rotate(45deg);
+}
+
+.product-grid__hotspot-icon {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1;
+  color: #000;
+  transition: transform 0.3s ease, color 0.3s ease;
+  user-select: none;
+  font-family: 'Jost', sans-serif;
+}
+
+/* ============================================================
+ * Mobile Backdrop
+ * ============================================================
+ * A fullscreen semi-transparent overlay shown ONLY on mobile
+ * (≤768px) when a popup is open. On desktop, popups appear as
+ * small inline cards and don't need a backdrop.
+ * ============================================================ */
+.product-grid__backdrop {
+  display: none;
+}
+
+.product-grid__backdrop--visible {
+  display: block;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 99;
+}
+
+/* ============================================================
+ * Product Popup / Popover Card
+ * ============================================================
+ * A compact floating card displaying product details, variant
+ * pickers, and an Add to Cart button. On desktop it's positioned
+ * absolutely within the grid item (centered on the image). On
+ * mobile it switches to fixed positioning in the viewport center
+ * for better usability on small screens.
+ * ============================================================ */
+.product-grid__popup {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 311px;
+}
+
+.product-grid__popup[aria-hidden="false"] {
+  display: block;
+  animation: pgPopupFadeIn 0.25s ease-out;
+}
+
+@keyframes pgPopupFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.product-grid__popup-inner {
+  background: #fff;
+  border-radius: 0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.20);
+  padding: 36px 20px 20px 20px;
+  position: relative;
+  font-family: 'Jost', sans-serif;
+}
+
+/* ---- Popup Close Button ---- */
+.product-grid__popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 24px;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+  font-family: 'Jost', sans-serif;
+}
+
+.product-grid__popup-close:hover {
+  color: #666;
+}
+
+/* ============================================================
+ * Popup Content Typography
+ * ============================================================ */
+.product-grid__popup-header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.product-grid__popup-image {
+  width: 120px;
+  height: 140px;
+  object-fit: cover;
+}
+
+.product-grid__popup-info {
+  flex: 1;
+}
+
+.product-grid__popup-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #000;
+  margin: 13px 0 10px;
+  line-height: 1.2;
+}
+
+.product-grid__popup-price {
+  font-family: 'Lustria', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000;
+  margin: 0 0 10px;
+}
+
+.product-grid__popup-description {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #000;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Strip default margin from description HTML paragraphs */
+.product-grid__popup-description p {
+  margin: 0;
+}
+
+/* ============================================================
+ * Variant Option Selectors
+ * ============================================================ */
+.product-grid__option-group {
+  margin-bottom: 12px;
+}
+
+.product-grid__option-group label {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+/* Static Color Boxes */
+.product-grid__color-boxes {
+  display: flex;
+  height: 40.44px;
+  border: 0.5px solid black;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Black sliding selection indicator — covers one half at a time */
+.product-grid__color-slider {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background-color: #000;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  display: none;
+  /* Hidden until user first clicks a color */
+}
+
+.product-grid__color-slider.is-active {
+  display: block;
+}
+
+/* When second option is selected, slide right */
+.product-grid__color-slider.slide-right {
+  transform: translateX(100%);
+}
+
+.product-grid__color-box {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  font-family: 'Jost', sans-serif;
+  font-size: 18px;
+  color: #000;
+  cursor: pointer;
+  z-index: auto;
+}
+
+.product-grid__color-text {
+  color: #fff;
+  mix-blend-mode: difference;
+  position: relative;
+  z-index: 2;
+}
+
+.product-grid__color-box:first-of-type {
+  border-right: 0.5px solid black;
+}
+
+/* Static colored bar on each option's left edge */
+.product-grid__color-box::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background-color: var(--swatch-color, transparent);
+  background-image: var(--swatch-image, none);
+  background-size: cover;
+  background-position: center;
+  border-right: 0.5px solid black;
+  z-index: 2;
+}
+
+/* ============================================================
+ * Custom Size Dropdown
+ * ============================================================ */
+.product-grid__custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.product-grid__select-trigger {
+  width: 100%;
+  height: 40.44px;
+  padding: 0 0 0 13px;
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  border: 0.5px solid black;
+  border-radius: 0;
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.product-grid__select-arrow-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 100%;
+  border-left: 0.5px solid black;
+  flex-shrink: 0;
+}
+
+.product-grid__select-arrow {
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.product-grid__custom-select.is-open .product-grid__select-arrow {
+  transform: rotate(180deg);
+}
+
+.product-grid__select-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 0.5px solid black;
+  border-top: none;
+  z-index: 20;
+  max-height: 250px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.product-grid__custom-select.is-open .product-grid__select-dropdown {
+  display: block;
+}
+
+.product-grid__select-option {
+  padding: 12px 13px;
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+  background-color: #fff;
+  text-align: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.product-grid__select-option:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+/* ============================================================
+ * Add to Cart Button
+ * ============================================================ */
+.product-grid__add-to-cart {
+  width: 100%;
+  height: 45px;
+  font-family: 'Jost', sans-serif;
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20.5px;
+  text-transform: uppercase;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  margin-top: 51px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-grid__add-to-cart:hover {
+  background-color: #000;
+}
+
+.product-grid__add-to-cart:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+ * Feedback Messages
+ * Shown temporarily below the Add to Cart button after action.
+ * ============================================================ */
+.product-grid__feedback {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+.product-grid__feedback--success {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+}
+
+.product-grid__feedback--error {
+  color: #c62828;
+  background-color: #ffebee;
+}
+
+/* ============================================================
+ * Responsive — Tablet / Mobile (≤768px)
+ * ============================================================
+ * Switches the grid to 2 columns with tighter gap. The popup
+ * becomes a fixed viewport-centered card with a backdrop overlay
+ * because the grid cells are too small to contain the popup
+ * inline (each cell is ~170px on a 375px screen).
+ * ============================================================ */
+@media screen and (max-width: 768px) {
+  .product-grid-section {
+    padding: 0 16.72px;
+    margin-top: 0;
+  }
+
+  .product-grid__header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .product-grid__heading {
+    font-size: 24px;
+    line-height: 29px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    margin-bottom: 23.74px;
+  }
+
+  /* Slightly smaller hotspot on mobile */
+  .product-grid__hotspot {
+    width: 30px;
+    height: 30px;
+  }
+
+  .product-grid__hotspot-icon {
+    font-size: 16px;
+  }
+
+  /* Fullscreen backdrop behind popup on mobile (now globally managed, but kept here if it was duplicated) */
+  /* Handled globally now */
+
+  /* Fixed viewport-centered popup on mobile */
+  .product-grid__popup {
+    width: 311px;
+  }
+
+  .product-grid__popup-inner {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}

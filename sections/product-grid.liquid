@@ -1,0 +1,348 @@
+{%- comment -%}
+  ============================================================
+  Product Grid Section — sections/product-grid.liquid
+  ============================================================
+  Displays up to 6 product image blocks in a 3×2 grid with
+  interactive hotspot "+" buttons. Each block's product is
+  selectable by the merchant via the Shopify theme customizer
+  (product picker per block).
+
+  Clicking a hotspot opens a compact popup showing the product's
+  name, price, description, and variant options (Size/Color)
+  with a working Add to Cart button.
+
+  Built entirely from scratch — no Dawn sections, snippets, or
+  components are reused here.
+
+  Dependencies:
+    - assets/product-grid.css  (layout & styling)
+    - assets/product-grid.js   (popup logic & cart API)
+  ============================================================
+{%- endcomment -%}
+
+{{- 'product-grid.css' | asset_url | stylesheet_tag -}}
+
+{%- comment -%}
+  ============================================================
+  Soft Winter Jacket — Variant ID Lookup
+  ============================================================
+  The project spec requires that when a customer selects
+  Black + Medium for ANY product, the "Soft Winter Jacket"
+  must automatically be added to the cart alongside it.
+
+  We resolve the jacket's first available variant ID here in
+  Liquid (server-side) and pass it to JavaScript via a global
+  variable. This avoids an extra client-side API call.
+
+  `all_products` is limited to 20 unique handles per page,
+  but we only access one handle here so that's well within
+  the limit. If the product doesn't exist, the variable is
+  set to null and the JS auto-add logic gracefully skips.
+
+  The handle 'soft-winter-jacket' is derived from the product
+  title "Soft Winter Jacket" via Shopify's automatic
+  handleization (lowercase + hyphens).
+  ============================================================
+{%- endcomment -%}
+{%- assign swj_product = all_products['soft-winter-jacket'] -%}
+{%- if swj_product != blank -%}
+  {%- assign swj_variant_id = swj_product.first_available_variant.id
+    | default: swj_product.variants.first.id -%}
+{%- else -%}
+  {%- assign swj_variant_id = nil -%}
+{%- endif -%}
+
+<script>
+  /**
+   * Soft Winter Jacket variant ID — resolved server-side via Liquid.
+   * Used by product-grid.js for the conditional auto-add feature.
+   * Value is null if the product doesn't exist in the store.
+   */
+  window.__softWinterJacketVariantId = {{ swj_variant_id | default: 'null' }};
+</script>
+
+<section
+  id="product-grid-{{ section.id }}"
+  class="product-grid-section"
+  data-section-id="{{ section.id }}"
+>
+  {%- if section.settings.heading != blank -%}
+    <div class="product-grid__header">
+      <h2 class="product-grid__heading">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+  {%- comment -%}
+    Mobile backdrop overlay — only visible on small screens (≤768px)
+    when a popup is open. Clicking it closes the popup.
+  {%- endcomment -%}
+  <div class="product-grid__backdrop" aria-hidden="true"></div>
+
+  <div class="product-grid">
+    {%- for block in section.blocks -%}
+      {%- assign product = block.settings.product -%}
+      {%- assign custom_image = block.settings.custom_image -%}
+
+      <div
+        class="product-grid__item {% if product == blank and custom_image == blank %}product-grid__item--empty{% endif %}"
+        {{ block.shopify_attributes }}
+        data-block-id="{{ block.id }}"
+      >
+        <div class="product-grid__image-wrapper">
+          {%- if custom_image != blank -%}
+            <img
+              src="{{ custom_image | image_url: width: 866 }}"
+              srcset="
+                {{ custom_image | image_url: width: 433 }} 433w,
+                {{ custom_image | image_url: width: 866 }} 866w
+              "
+              sizes="(max-width: 768px) 45vw, 433px"
+              alt="{{ custom_image.alt | default: product.title | escape }}"
+              class="product-grid__image"
+              width="433"
+              height="444"
+              loading="lazy"
+            >
+          {%- elsif product.featured_image != blank -%}
+            <img
+              src="{{ product.featured_image | image_url: width: 866 }}"
+              srcset="
+                {{ product.featured_image | image_url: width: 433 }} 433w,
+                {{ product.featured_image | image_url: width: 866 }} 866w
+              "
+              sizes="(max-width: 768px) 45vw, 433px"
+              alt="{{ product.featured_image.alt | default: product.title | escape }}"
+              class="product-grid__image"
+              width="433"
+              height="444"
+              loading="lazy"
+            >
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'product-grid__placeholder-svg' }}
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} ---- Box Action Button ---- {%- endcomment -%}
+        <div class="product-grid__box-btn">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 1v12M1 7h12" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div
+          class="product-grid__popup"
+          data-popup-id="{{ block.id }}"
+          aria-hidden="true"
+          role="dialog"
+          aria-label="Product details"
+        >
+          {%- case forloop.index -%}
+            {%- when 1 -%}
+              {%- assign mock_title = "Orange Wide Leg" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 2 -%}
+              {%- assign mock_title = "Tailored Jacket" -%}
+              {%- assign mock_c1 = "Blue" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 3 -%}
+              {%- assign mock_title = "Accordion Pleated Dress" -%}
+              {%- assign mock_c1 = "Red" -%}
+              {%- assign mock_c2 = "Grey" -%}
+            {%- when 4 -%}
+              {%- assign mock_title = "Green Trench Coat" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 5 -%}
+              {%- assign mock_title = "Tennis Blue T-Shirt" -%}
+              {%- assign mock_c1 = "Grey" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- when 6 -%}
+              {%- assign mock_title = "Long Sleeve Tennis Top" -%}
+              {%- assign mock_c1 = "Blue" -%}
+              {%- assign mock_c2 = "Black" -%}
+            {%- else -%}
+              {%- assign mock_title = "Product Title" -%}
+              {%- assign mock_c1 = "White" -%}
+              {%- assign mock_c2 = "Black" -%}
+          {%- endcase -%}
+          {%- assign mock_price = "980,00€" -%}
+          {%- assign mock_desc = "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief." -%}
+
+          <div class="product-grid__popup-inner">
+            <button
+              class="product-grid__popup-close"
+              type="button"
+              aria-label="Close product details"
+            >
+              &times;
+            </button>
+
+            <div class="product-grid__popup-header">
+              {%- if custom_image != blank -%}
+                <img src="{{ custom_image | image_url: width: 240 }}" class="product-grid__popup-image" alt="">
+              {%- elsif product.featured_image != blank -%}
+                <img src="{{ product.featured_image | image_url: width: 240 }}" class="product-grid__popup-image" alt="">
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'product-grid__popup-image' }}
+              {%- endif -%}
+              <div class="product-grid__popup-info">
+                <h3 class="product-grid__popup-title">{{ product.title | default: "Product Title" }}</h3>
+                <p class="product-grid__popup-price">{{ product.price | money | default: "980,00€" }}</p>
+                <div class="product-grid__popup-description">
+                  {{ product.description | strip_html | truncatewords: 20 | default: "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief." }}
+                </div>
+              </div>
+            </div>
+
+            <form class="product-grid__popup-form" data-product-handle="{{ product.handle }}">
+                
+                {%- unless product.has_only_default_variant -%}
+                  {%- comment -%} First pass: Render ONLY the Color option so it's always on top {%- endcomment -%}
+                  {%- for option in product.options_with_values -%}
+                    {%- assign option_name_downcase = option.name | downcase -%}
+                    {%- if option_name_downcase == 'color' or option_name_downcase == 'colour' -%}
+                      <div class="product-grid__option-group">
+                        <label>{{ option.name }}</label>
+                        <div class="product-grid__color-boxes">
+                          <div class="product-grid__color-slider" style="width: {{ 100.0 | divided_by: option.values.size }}%;"></div>
+                          {%- for value in option.values -%}
+                            {%- assign custom_color = value | downcase | replace: ' ', '' -%}
+                            {%- if value.swatch.color -%}
+                              {%- assign custom_color = value.swatch.color -%}
+                            {%- endif -%}
+                            <div class="product-grid__color-box" style="--swatch-color: {{ custom_color }}; {% if value.swatch.image %}--swatch-image: url('{{ value.swatch.image | image_url: width: 50 }}');{% endif %}" data-value="{{ value | escape }}" data-index="{{ forloop.index0 }}">
+                              <span class="product-grid__color-text">{{ value }}</span>
+                            </div>
+                          {%- endfor -%}
+                        </div>
+                        <select class="product-grid__option-select" style="display: none;" data-option-index="{{ forloop.index }}">
+                          <option value="">Choose {{ option.name | downcase }}</option>
+                          {%- for value in option.values -%}
+                            <option value="{{ value | escape }}">{{ value }}</option>
+                          {%- endfor -%}
+                        </select>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  {%- comment -%} Second pass: Render ALL OTHER options below Color {%- endcomment -%}
+                  {%- for option in product.options_with_values -%}
+                    {%- assign option_name_downcase = option.name | downcase -%}
+                    {%- if option_name_downcase != 'color' and option_name_downcase != 'colour' -%}
+                      <div class="product-grid__option-group">
+                        <label>{{ option.name }}</label>
+                        <div class="product-grid__custom-select">
+                          <button type="button" class="product-grid__select-trigger">
+                            <span class="product-grid__select-text">Choose your {{ option.name | downcase }}</span>
+                            <div class="product-grid__select-arrow-wrap">
+                              <svg class="product-grid__select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1l5 5 5-5" stroke="black" stroke-width="1.5" fill="none"/>
+                              </svg>
+                            </div>
+                          </button>
+                          <div class="product-grid__select-dropdown">
+                            {%- for value in option.values -%}
+                              <div class="product-grid__select-option" data-value="{{ value | escape }}">{{ value }}</div>
+                            {%- endfor -%}
+                          </div>
+                        </div>
+                        <select class="product-grid__option-select" style="display: none;" data-option-index="{{ forloop.index }}">
+                          <option value="">Choose your {{ option.name | downcase }}</option>
+                          {%- for value in option.values -%}
+                            <option value="{{ value | escape }}">{{ value }}</option>
+                          {%- endfor -%}
+                        </select>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endunless -%}
+
+                <button type="submit" class="product-grid__add-to-cart">
+                  <span>ADD TO CART</span>
+                  <svg width="34" height="12" viewBox="0 0 34 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 16px;">
+                    <path d="M0 6H33M33 6L28 1M33 6L28 11" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </form>
+
+              <script type="application/json" data-variants>
+                {{ product.variants | json }}
+              </script>
+            </div>
+          </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+<script src="{{ 'product-grid.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Product Grid",
+  "tag": "section",
+  "class": "product-grid-section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Tisso vison in the wild"
+    }
+  ],
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "product_block",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom Image",
+          "info": "Overrides the product's default featured image."
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Select which product appears in this grid slot."
+        },
+        {
+          "type": "range",
+          "id": "hotspot_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 70,
+          "label": "Hotspot horizontal position (%)",
+          "info": "Move the '+' button left (0%) or right (100%) within the image."
+        },
+        {
+          "type": "range",
+          "id": "hotspot_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 20,
+          "label": "Hotspot vertical position (%)",
+          "info": "Move the '+' button up (0%) or down (100%) within the image."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Grid",
+      "blocks": [
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" },
+        { "type": "product_block" }
+      ]
+    }
+  ]
+}
+{% endschema %}
